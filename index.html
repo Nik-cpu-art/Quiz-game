@@ -7,8 +7,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; text-align: center; padding: 20px; margin: 0; }
-        
-        /* პორტალის დიზაინი */
         .header-title { font-size: 2.8rem; color: #f1c40f; margin-top: 40px; font-weight: bold; }
         .sub-text { opacity: 0.7; margin-bottom: 40px; font-size: 1.1rem; }
         
@@ -30,13 +28,11 @@
         .package-card .icon { font-size: 2.8rem; margin-bottom: 10px; }
         .package-card h2 { font-size: 1.2rem; margin: 0; color: #f1c40f; }
 
-        /* თამაშის ზონა */
         #game-zone { display: none; max-width: 800px; margin: 0 auto; }
         .back-btn { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
         .controls { margin-bottom: 25px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
         .controls button { padding: 10px 15px; background: #f1c40f; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: #0f172a; }
         
-        /* კითხვების ბარათი */
         .question-card { background: white; padding: 25px; border-radius: 12px; color: #1e293b; text-align: left; border-left: 6px solid #3b82f6; margin-bottom: 20px; }
         .timer-container { display: flex; align-items: center; gap: 10px; margin: 15px 0; background: #f1f5f9; padding: 8px; border-radius: 6px; }
         .timer-display { font-size: 1.3rem; font-weight: bold; color: #ef4444; min-width: 40px; }
@@ -54,8 +50,109 @@
             <div class="package-card" onclick="loadPackage('https://docs.google.com/spreadsheets/d/e/2PACX-1vTPbFyJhfjucAuCP4lUcZVjh2yiMChHcSxGjqIAWc8ixsSaIWeVVjTPKCxJyKJXkL8cAFe2mYwuFMuF/pub?output=csv', 'პოლიტიკა')">
                 <div class="icon">⚖️</div><h2>პოლიტიკა</h2>
             </div>
-            <div class="package-card" onclick="loadPackage('აქ_ჩასვი_ლინკი', 'ფეხბურთი')">
+            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'ფეხბურთი')">
                 <div class="icon">⚽</div><h2>ფეხბურთი</h2>
             </div>
-            <div class="package-card" onclick="loadPackage('აქ_ჩასვი_ლინკი', 'გეოგრაფია')">
-                <div
+            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'გეოგრაფია')">
+                <div class="icon">🌍</div><h2>გეოგრაფია</h2>
+            </div>
+            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'სპორტი')">
+                <div class="icon">🏆</div><h2>სპორტი</h2>
+            </div>
+            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'მუსიკა')">
+                <div class="icon">🎵</div><h2>მუსიკა</h2>
+            </div>
+            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'კინო')">
+                <div class="icon">🎬</div><h2>კინო</h2>
+            </div>
+            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'ხელოვნება')">
+                <div class="icon">🎨</div><h2>ხელოვნება</h2>
+            </div>
+            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'კალათბურთი')">
+                <div class="icon">🏀</div><h2>კალათბურთი</h2>
+            </div>
+            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'ჰიბრიდი')">
+                <div class="icon">🌀</div><h2>ჰიბრიდი</h2>
+            </div>
+            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'სვაიაკი')">
+                <div class="icon">💡</div><h2>სვაიაკი</h2>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-zone">
+        <button class="back-btn" onclick="location.reload()">⬅️ მენიუ</button>
+        <h1 id="pkg-name-display" style="color: #f1c40f;"></h1>
+        <h2 id="round-title-display" style="opacity: 0.8;"></h2>
+        <div class="controls">
+            <button onclick="filterRound(1)">რაუნდი I</button>
+            <button onclick="filterRound(2)">ბარათონი</button>
+            <button onclick="filterRound(3)">პაპა კარლო</button>
+            <button onclick="filterRound(4)">რაუნდი IV</button>
+        </div>
+        <div id="quiz-container"></div>
+    </div>
+
+    <script>
+        let allData = [];
+        let activeIntervals = {};
+
+        function loadPackage(url, name) {
+            if (url === 'ლინკი_აქ') {
+                alert("ამ პაკეტის ცხრილი ჯერ არ არის მიბმული!");
+                return;
+            }
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('game-zone').style.display = 'block';
+            document.getElementById('pkg-name-display').innerText = name;
+            
+            Papa.parse(url, {
+                download: true,
+                header: false,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    allData = results.data;
+                    filterRound(1);
+                }
+            });
+        }
+
+        window.filterRound = function(num) {
+            Object.values(activeIntervals).forEach(clearInterval);
+            activeIntervals = {};
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = "";
+            const titles = { 1: "რაუნდი I", 2: "ბარათონი", 3: "პაპა კარლო", 4: "ასოციაციები" };
+            document.getElementById('round-title-display').innerText = titles[num];
+
+            const filtered = allData.filter(row => row[0] && row[0].trim() == num.toString());
+            filtered.forEach((row, index) => {
+                let q = row[1] || ""; let a = row[2] || "";
+                const tid = `t-${index}`;
+                const div = document.createElement('div');
+                div.className = 'question-card';
+                div.innerHTML = `
+                    ${q.includes('http') ? `<img src="${q}" class="q-img">` : `<div style="font-weight:bold; font-size:1.1rem;">${q}</div>`}
+                    <div class="timer-container">
+                        <button onclick="startT('${tid}', 20, this)" style="cursor:pointer; background:#27ae60; color:white; border:none; padding:5px 10px; border-radius:4px;">⏱️ 20წ</button>
+                        <div id="${tid}" class="timer-display">20</div>
+                    </div>
+                    <button onclick="this.nextElementSibling.style.display='block'; this.style.display='none'" style="cursor:pointer; background:#3498db; color:white; border:none; padding:8px 15px; border-radius:5px;">პასუხი</button>
+                    <div class="ans-text">✅ ${a}</div>
+                `;
+                container.appendChild(div);
+            });
+            window.scrollTo(0,0);
+        }
+
+        window.startT = function(id, dur, btn) {
+            if (activeIntervals[id]) return;
+            let t = dur; btn.disabled = true; btn.style.opacity = "0.5";
+            activeIntervals[id] = setInterval(() => {
+                t--; document.getElementById(id).textContent = t;
+                if(t <= 0) { clearInterval(activeIntervals[id]); document.getElementById(id).textContent = "⌛ დრო გავიდა!"; }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
