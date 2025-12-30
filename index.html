@@ -3,38 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Portal - 9 პაკეტი</title>
+    <title>იაზროვნე იმისთვის, რომ იარსებო!</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; text-align: center; padding: 20px; margin: 0; }
         
-        /* მენიუს დიზაინი */
-        #home-page { display: block; }
-        .header-title { font-size: 3rem; color: #f1c40f; margin-top: 30px; text-transform: uppercase; }
+        /* პორტალის დიზაინი */
+        .header-title { font-size: 2.8rem; color: #f1c40f; margin-top: 40px; font-weight: bold; }
+        .sub-text { opacity: 0.7; margin-bottom: 40px; font-size: 1.1rem; }
         
         .menu-container { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
             gap: 20px; 
-            max-width: 1100px; 
-            margin: 40px auto; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px;
         }
         
         .package-card { 
-            background: #1e293b; padding: 30px; border-radius: 15px; cursor: pointer; 
+            background: #1e293b; padding: 25px; border-radius: 15px; cursor: pointer; 
             border: 2px solid #334155; transition: 0.3s;
+            display: flex; flex-direction: column; align-items: center;
         }
         .package-card:hover { transform: translateY(-8px); border-color: #f1c40f; background: #334155; }
-        .package-card .icon { font-size: 3rem; margin-bottom: 10px; }
-        .package-card h2 { font-size: 1.4rem; margin: 0; color: #f1c40f; }
+        .package-card .icon { font-size: 2.8rem; margin-bottom: 10px; }
+        .package-card h2 { font-size: 1.2rem; margin: 0; color: #f1c40f; }
 
         /* თამაშის ზონა */
         #game-zone { display: none; max-width: 800px; margin: 0 auto; }
         .back-btn { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
-        
         .controls { margin-bottom: 25px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
         .controls button { padding: 10px 15px; background: #f1c40f; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: #0f172a; }
         
+        /* კითხვების ბარათი */
         .question-card { background: white; padding: 25px; border-radius: 12px; color: #1e293b; text-align: left; border-left: 6px solid #3b82f6; margin-bottom: 20px; }
         .timer-container { display: flex; align-items: center; gap: 10px; margin: 15px 0; background: #f1f5f9; padding: 8px; border-radius: 6px; }
         .timer-display { font-size: 1.3rem; font-weight: bold; color: #ef4444; min-width: 40px; }
@@ -45,16 +47,15 @@
 <body>
 
     <div id="home-page">
-        <h1 class="header-title">ინტელექტ-პორტალი</h1>
-        <p style="opacity: 0.7;">აირჩიე თემატიკა და დაიწყე თამაში</p>
+        <h1 class="header-title">"იაზროვნე იმისთვის, რომ იარსებო!"</h1>
+        <p class="sub-text">ამოირჩიე სასურველი პაკეტი</p>
         
         <div class="menu-container">
             <div class="package-card" onclick="loadPackage('https://docs.google.com/spreadsheets/d/e/2PACX-1vTPbFyJhfjucAuCP4lUcZVjh2yiMChHcSxGjqIAWc8ixsSaIWeVVjTPKCxJyKJXkL8cAFe2mYwuFMuF/pub?output=csv', 'პოლიტიკა')">
-                <div class="icon">⚖️</div>
-                <h2>პოლიტიკა</h2>
+                <div class="icon">⚖️</div><h2>პოლიტიკა</h2>
             </div>
-            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'ფეხბურთი')">
-                <div class="icon">⚽</div>
-                <h2>ფეხბურთი</h2>
+            <div class="package-card" onclick="loadPackage('აქ_ჩასვი_ლინკი', 'ფეხბურთი')">
+                <div class="icon">⚽</div><h2>ფეხბურთი</h2>
             </div>
-            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'ს
+            <div class="package-card" onclick="loadPackage('აქ_ჩასვი_ლინკი', 'გეოგრაფია')">
+                <div
