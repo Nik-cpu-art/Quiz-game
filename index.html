@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ვიქტორინა - 20 წამიანი ტაიმერით</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #2c3e50;
+            color: white;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        #current-round-title {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #f1c40f;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .controls {
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .controls button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            background: #f1c40f;
+            color: #2c3e50;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .controls button:hover {
+            background: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        #quiz-container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .question-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            color: #333;
+            text-align: left;
+            border-left: 8px solid #1a2a6c;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .q-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .timer-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .timer-display.low-time {
+            color: #e74c3c;
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0.4; }
+        }
+
+        .timer-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .timer-btn.reset {
+            background: #95a5a6;
+        }
+
+        .show-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .ans-text {
+            display: none;
+            margin-top: 20px;
+            color: #27ae60;
+            font-size: 1.25rem;
+            font-weight: bold;
+            border-top: 2px solid #eee;
+            padding-top: 15px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="current-round-title">იტვირთება...</h1>
+
+    <div class="controls">
+        <button onclick="filterRound(1)">რაუნდი I</button>
+        <button onclick="filterRound(2)">ბარათონი</button>
+        <button onclick="filterRound(3)">პაპა კარლო</button>
+        <button onclick="filterRound(4)">რაუნდი IV</button>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <script>
+        // შენი Google Sheets CSV ლინკი
+        const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPbFyJhfjucAuCP4lUcZVjh2yiMChHcSxGjqIAWc8ixsSaIWeVVjTPKCxJyKJXkL8cAFe2mYwuFMuF/pub?output=csv";
+        let allData = [];
+        let activeIntervals = {};
+
+        // მონაცემების წამოღება
+        function fetchData() {
+            Papa.parse(csvUrl, {
+                download: true,
+                header: false,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    allData = results.data;
+                    filterRound(1); // იწყებს პირველი რაუნდით
+                }
+            });
+        }
+
+        window.filterRound = function(num) {
+            // წინა ტაიმერების გასუფთავება
+            Object.values(activeIntervals).forEach(clearInterval);
+            activeIntervals = {};
+
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = "";
+            
+            const titles = { 
+                1: "რაუნდი I: ჩამოთვალე", 
+                2: "რაუნდი II: ბარათონი", 
+                3: "რაუნდი III: პაპა კარლო", 
+                4: "რაუნდი IV: ასოციაციები" 
+            };
+            document.getElementById('current-round-title').innerText = titles[num] || "რაუნდი " + num;
+
+            // ფილტრაცია A სვეტის მიხედვით
+            const filtered = allData.filter(row => row[0] && row[0].trim() == num.toString());
+
+            if (filtered.length === 0) {
+                container.innerHTML = "<p style='color:white; text-align:center;'>მონაცემები ვერ მოიძებნა. შეამოწმე A სვეტი!</p>";
+                return;
+            }
+
+            filtered.forEach((row, index) => {
+                let q = row[1] || ""; // B სვეტი
+                let a = row[2] || ""; // C სვეტი
+                const timerId = `timer-${index}`;
+                let isImg = q.includes('http');
+
+                div = document.createElement('div');
+                div.className = 'question-card';
+
+                div.innerHTML = `
+                    <div class="q-content">
+                        ${isImg ? `<img src="${q}" class="q-img">` : `<div class="question-text">${q.replace(/\n/g, '<br>')}</div>`}
+                        
+                        <div class="timer-container">
+                            <button class="timer-btn" onclick="startTimer('${timerId}', 20, this)">⏱️ ჩართვა (20წ)</button>
+                            <div id="${timerId}" class="timer-display">20</div>
+                            <button class="timer-btn reset" onclick="resetTimer('${timerId}', 20)">🔄</button>
+                        </div>
+
+                        <button class="show-btn" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">პასუხის ნახვა</button>
+                        <div class="ans-text">✅ პასუხი: ${a.replace(/\n/g, '<br>')}</div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            window.scrollTo(0, 0);
+        }
+
+        window.startTimer = function(displayId, duration, btn) {
+            if (activeIntervals[displayId]) return;
+
+            let timer = duration;
+            const display = document.getElementById(displayId);
+            btn.style.opacity = "0.5";
+            btn.disabled = true;
+
+            activeIntervals[displayId] = setInterval(function () {
+                timer--;
+                display.textContent = timer;
+
+                if (timer <= 3) {
+                    display.classList.add('low-time');
+                }
+
+                if (timer <= 0) {
+                    clearInterval(activeIntervals[displayId]);
+                    delete activeIntervals[displayId];
+
