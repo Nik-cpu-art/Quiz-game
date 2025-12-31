@@ -10,11 +10,11 @@
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; text-align: center; padding: 20px; margin: 0; line-height: 1.6; }
         .header-title { font-size: 2.5rem; color: #f1c40f; margin-top: 40px; font-weight: 800; text-transform: uppercase; }
         
-        /* Leaderboard */
+        /* რეიტინგის დაფა */
         #leaderboard-section { max-width: 600px; margin: 0 auto 40px; background: #1e293b; padding: 20px; border-radius: 16px; border: 1px solid rgba(241, 196, 15, 0.4); }
         .lb-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #334155; }
 
-        /* Menu */
+        /* პაკეტების მენიუ */
         .menu-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; padding: 20px; }
         .package-card { background: #1e293b; padding: 25px; border-radius: 20px; border: 1px solid #334155; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
         .package-card:hover { transform: translateY(-5px); border-color: #f1c40f; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
@@ -23,16 +23,18 @@
         .mini-select { background: #0f172a; color: white; border: 1px solid #f1c40f; padding: 5px; border-radius: 5px; }
         .mini-rate-btn { background: #f1c40f; color: #0f172a; border: none; padding: 6px 12px; border-radius: 5px; font-weight: bold; cursor: pointer; }
 
-        /* Game Zone */
+        /* სათამაშო ზონა */
         #game-zone { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 50px; }
         .controls { margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
         .controls button { padding: 12px 20px; background: #334155; border: 1px solid #f1c40f; border-radius: 10px; color: #f1c40f; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .controls button:hover { background: #f1c40f; color: #0f172a; }
         
-        /* Question Card Style */
-        .question-card { background: #ffffff; padding: 35px; border-radius: 25px; color: #1e293b; text-align: left; margin-bottom: 40px; box-shadow: 0 12px 30px rgba(0,0,0,0.3); border-top: 6px solid #3b82f6; position: relative; }
+        /* კითხვის ბარათის დიზაინი */
+        .question-card { background: #ffffff; padding: 35px; border-radius: 25px; color: #1e293b; text-align: left; margin-bottom: 40px; box-shadow: 0 12px 30px rgba(0,0,0,0.3); border-top: 6px solid #3b82f6; overflow: hidden; }
         .theme-header { background: #3b82f6; color: white; padding: 8px 15px; border-radius: 10px; font-weight: bold; margin-bottom: 15px; display: inline-block; font-size: 0.9rem; }
-        .instr-header { background: #6366f1; color: white; padding: 12px 20px; border-radius: 15px; font-weight: bold; margin-bottom: 20px; display: block; border-left: 6px solid #4338ca; font-size: 1.1rem; }
+        
+        /* ინსტრუქციის სტილი */
+        .instr-header { background: #6366f1; color: white; padding: 15px 20px; border-radius: 15px; font-weight: bold; margin-bottom: 25px; display: block; border-left: 8px solid #4338ca; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2); }
         
         .timer-row { display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; padding: 15px 25px; border-radius: 18px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
         .timer-display { font-size: 2rem; font-weight: 800; color: #ef4444; }
@@ -125,20 +127,23 @@
                 let rawQ = (row[1] || "").trim(); 
                 let ans = row[2] || "";
                 
-                // ინსტრუქციის დამუშავება
+                // 1. ინსტრუქციის ამოღება და გასუფთავება
                 let instrHtml = "";
-                if(rawQ.toLowerCase().includes("ინსტრუქცია:")) {
-                    let match = rawQ.match(/ინსტრუქცია:(.*?)(?:\n|$)/i);
-                    if(match) {
-                        instrHtml = `<div class="instr-header">📢 ინსტრუქცია: ${match[1].trim()}</div>`;
-                        rawQ = rawQ.replace(match[0], "").trim();
-                    }
+                const instrMatch = rawQ.match(/ინსტრუქცია:(.*?)(?:\n|$)/i);
+                if (instrMatch) {
+                    instrHtml = `<div class="instr-header">📢 ${instrMatch[0].trim()}</div>`;
+                    // ვშლით ინსტრუქციას ტექსტიდან, რომ არ გაორმაგდეს
+                    rawQ = rawQ.replace(instrMatch[0], "").trim();
                 }
 
+                // 2. თემის და კითხვის დაყოფა
                 let parts = rawQ.split(/კითხვა\s*\d+[:\s]*/i);
                 let theme = parts[0] ? parts[0].trim() : "";
                 let body = parts[1] ? parts[1].trim() : theme;
                 if (!parts[1]) theme = "";
+
+                // თუ არც ინსტრუქციაა და არც კითხვა, არაფერს ვხატავთ
+                if (!body && !instrHtml) return;
 
                 let contentHtml = body.includes('http') ? `<img src="${body}" class="q-img">` : body;
 
@@ -146,41 +151,6 @@
                     <div class="question-card">
                         ${instrHtml}
                         ${theme ? `<div class="theme-header">🏷️ ${theme}</div>` : ''}
-                        <div style="font-size:1.3rem; font-weight:500; margin-bottom:25px; color:#1e293b;">${contentHtml}</div>
+                        ${body ? `<div style="font-size:1.3rem; font-weight:500; margin-bottom:25px; color:#1e293b;">${contentHtml}</div>` : ''}
                         <div class="timer-row">
-                            <button onclick="startT(this.nextElementSibling)" style="cursor:pointer; padding:10px 18px; border-radius:10px; border:none; background:#e2e8f0; font-weight:bold; color:#475569;">⏱️ ტაიმერი</button>
-                            <div class="timer-display">20</div>
-                        </div>
-                        <button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button>
-                        <div class="ans-text">✅ პასუხი: ${ans}</div>
-                    </div>`;
-            });
-
-            if (num === 4 && currentPkgObj) {
-                container.innerHTML += `
-                    <div class="final-rating-box">
-                        <h2>🎉 პაკეტი დასრულდა!</h2>
-                        <p>მოგეწონათ კითხვები? შეაფასეთ ავტორი:</p>
-                        <select id="final-rate-select" class="mini-select" style="font-size:1.1rem; padding:10px; margin-bottom:15px;">
-                            <option value="5">5 ⭐ (საუკეთესო)</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option>
-                        </select><br>
-                        <button class="mini-rate-btn" style="padding:12px 30px; font-size:1rem;" onclick="vote(${currentPkgObj.id}, ${currentPkgObj.total_score || 0}, ${currentPkgObj.votes_count || 0}, 'final-rate-select')">გაგზავნა</button>
-                    </div>`;
-            }
-            window.scrollTo(0, 0);
-        };
-
-        window.vote = async function(id, tot, cnt, selId) {
-            const val = parseInt(document.getElementById(selId).value);
-            const { error } = await _db.from('packages').update({ total_score: tot+val, votes_count: cnt+1, rating: (tot+val)/(cnt+1) }).eq('id', id);
-            if(!error) { alert("მადლობა შეფასებისთვის!"); location.reload(); }
-        };
-
-        function startT(el) {
-            let s = 20; el.innerText = s;
-            const itv = setInterval(() => { s--; el.innerText = s; if(s<=0){ clearInterval(itv); el.innerText="⌛"; } }, 1000);
-        }
-        initApp();
-    </script>
-</body>
-</html>
+                            <button onclick="startT(this.nextElementSibling)"
