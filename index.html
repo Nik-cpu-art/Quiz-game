@@ -10,191 +10,36 @@
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; text-align: center; padding: 20px; margin: 0; line-height: 1.6; }
         .header-title { font-size: 2.5rem; color: #f1c40f; margin-top: 40px; font-weight: 800; text-transform: uppercase; }
         
-        /* რეიტინგის სექცია */
+        /* Leaderboard */
         #leaderboard-section { max-width: 600px; margin: 0 auto 40px; background: #1e293b; padding: 20px; border-radius: 16px; border: 1px solid rgba(241, 196, 15, 0.4); }
         .lb-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #334155; }
-        .lb-item:last-child { border: none; }
 
-        /* მენიუ */
+        /* Menu */
         .menu-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; padding: 20px; }
         .package-card { background: #1e293b; padding: 25px; border-radius: 20px; border: 1px solid #334155; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
-        .package-card:hover { transform: translateY(-5px); border-color: #f1c40f; }
+        .package-card:hover { transform: translateY(-5px); border-color: #f1c40f; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
 
-        /* გარე შეფასების სტილი */
         .card-rating-zone { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .mini-select { background: #0f172a; color: white; border: 1px solid #f1c40f; padding: 5px; border-radius: 5px; font-size: 0.9rem; }
-        .mini-rate-btn { background: #f1c40f; color: #0f172a; border: none; padding: 5px 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
+        .mini-select { background: #0f172a; color: white; border: 1px solid #f1c40f; padding: 5px; border-radius: 5px; }
+        .mini-rate-btn { background: #f1c40f; color: #0f172a; border: none; padding: 6px 12px; border-radius: 5px; font-weight: bold; cursor: pointer; }
 
-        /* თამაშის ზონა */
+        /* Game Zone */
         #game-zone { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 50px; }
         .controls { margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        .controls button { padding: 12px 20px; background: #334155; border: 1px solid #f1c40f; border-radius: 10px; color: #f1c40f; font-weight: bold; cursor: pointer; }
+        .controls button { padding: 12px 20px; background: #334155; border: 1px solid #f1c40f; border-radius: 10px; color: #f1c40f; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .controls button:hover { background: #f1c40f; color: #0f172a; }
         
-        .question-card { background: #ffffff; padding: 30px; border-radius: 20px; color: #1e293b; text-align: left; margin-bottom: 35px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); border-top: 5px solid #3b82f6; }
-        .theme-header { background: #3b82f6; color: white; padding: 10px 20px; border-radius: 12px; font-weight: bold; margin-bottom: 15px; display: block; }
-        .timer-row { display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 15px 25px; border-radius: 15px; margin-bottom: 15px; }
-        .timer-display { font-size: 1.8rem; font-weight: 800; color: #ef4444; }
-        .btn-ans { width: 100%; padding: 16px; background: #0f172a; color: white; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; }
-        .ans-text { display: none; margin-top: 20px; padding: 18px; background: #dcfce7; color: #166534; border-radius: 15px; font-weight: bold; border-left: 6px solid #22c55e; }
+        /* კითხვის ბარათი - ძველი ლამაზი ფორმატირება */
+        .question-card { background: #ffffff; padding: 35px; border-radius: 25px; color: #1e293b; text-align: left; margin-bottom: 40px; box-shadow: 0 12px 30px rgba(0,0,0,0.3); border-top: 6px solid #3b82f6; position: relative; }
+        .theme-header { background: #3b82f6; color: white; padding: 12px 20px; border-radius: 12px; font-weight: bold; margin-bottom: 20px; display: inline-block; font-size: 1rem; }
+        .instr-header { background: #6366f1; color: white; padding: 10px 18px; border-radius: 10px; font-weight: bold; margin-bottom: 15px; display: block; border-left: 5px solid #4338ca; }
         
-        .back-btn { background: #ef4444; color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; margin-bottom: 30px; font-weight: bold; }
-        .q-img { max-width: 100%; border-radius: 15px; margin-bottom: 15px; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-
-        /* შიდა შეფასების ბლოკი (IV რაუნდი) */
-        .final-rating-box { background: #f1c40f; color: #0f172a; padding: 30px; border-radius: 20px; margin-top: 40px; border: 4px solid #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-    </style>
-</head>
-<body>
-
-    <div id="home-page">
-        <h1 class="header-title">იაზროვნე იმისთვის, რომ იარსებო!</h1>
-        <div id="leaderboard-section">
-            <h3 style="color: #f1c40f; margin-bottom: 15px;">🏆 საუკეთესო ავტორები</h3>
-            <div id="leaderboard-list">იტვირთება...</div>
-        </div>
-        <div id="menu-container" class="menu-container"></div>
-    </div>
-
-    <div id="game-zone">
-        <button class="back-btn" onclick="location.reload()">⬅️ მენიუ</button>
-        <h1 id="pkg-name-display" style="color: #f1c40f; margin-bottom: 30px;"></h1>
-        <div class="controls">
-            <button onclick="filterRound(1)">რაუნდი I</button>
-            <button onclick="filterRound(2)">ბარათონი</button>
-            <button onclick="filterRound(3)">პაპა კარლო</button>
-            <button onclick="filterRound(4)">რაუნდი IV</button>
-        </div>
-        <div id="quiz-container"></div>
-    </div>
-
-    <script>
-        const S_URL = "https://jaxqzgnjanbnyvhrnlwu.supabase.co";
-        const S_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpheHF6Z25qYW5ibnl2aHJubHd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjY5NDAsImV4cCI6MjA4Mjc0Mjk0MH0.Wfcqhe5aJlFhwknTfol5_lcdKVcNQFjJqj0X7U5WLu4";
-        const _db = supabase.createClient(S_URL, S_KEY);
-        let activePkgData = [];
-        let currentPkgObj = null;
-
-        async function initApp() {
-            const { data } = await _db.from('packages').select('*').order('rating', { ascending: false });
-            
-            // Leaderboard
-            const lb = document.getElementById('leaderboard-list');
-            lb.innerHTML = "";
-            if(data) {
-                data.slice(0, 3).forEach((p, i) => {
-                    lb.innerHTML += `<div class="lb-item"><span>${i+1}. ${p.author_name} - ${p.title}</span><span style="color:#f1c40f; font-weight:bold;">⭐ ${Number(p.rating || 0).toFixed(1)}</span></div>`;
-                });
-            }
-
-            // Cards
-            const container = document.getElementById('menu-container');
-            container.innerHTML = "";
-            if(data) {
-                data.forEach(pkg => {
-                    const card = document.createElement('div');
-                    card.className = 'package-card';
-                    card.innerHTML = `
-                        <div onclick="openPackage(${JSON.stringify(pkg).replace(/"/g, '&quot;')})" style="cursor:pointer">
-                            <div style="font-size:3rem; margin-bottom:10px;">${pkg.icon || '💡'}</div>
-                            <h2>${pkg.title}</h2>
-                            <p style="opacity:0.8; margin-bottom:5px;">ავტორი: ${pkg.author_name}</p>
-                            <div style="color:#f1c40f; font-weight:bold;">⭐ ${Number(pkg.rating || 0).toFixed(1)}</div>
-                        </div>
-                        <div class="card-rating-zone">
-                            <select id="card-rate-${pkg.id}" class="mini-select">
-                                <option value="5">5 ⭐</option><option value="4">4 ⭐</option>
-                                <option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option>
-                            </select>
-                            <button class="mini-rate-btn" onclick="submitVote(${pkg.id}, ${pkg.total_score || 0}, ${pkg.votes_count || 0}, 'card-rate-${pkg.id}')">შეფასება</button>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            }
-        }
-
-        window.openPackage = function(pkg) {
-            currentPkgObj = pkg;
-            document.getElementById('home-page').style.display = 'none';
-            document.getElementById('game-zone').style.display = 'block';
-            document.getElementById('pkg-name-display').innerText = pkg.title;
-            Papa.parse(pkg.csv_url, { download: true, complete: (res) => { activePkgData = res.data; filterRound(1); } });
-        };
-
-        window.filterRound = function(num) {
-            const container = document.getElementById('quiz-container');
-            container.innerHTML = "";
-            let qList = activePkgData.filter(r => r[0] && r[0].toString().trim() === num.toString());
-            
-            qList.forEach((row, idx) => {
-                let rawQ = (row[1] || "").trim(); let ans = row[2] || "";
-                let parts = rawQ.split(/კითხვა\s*\d+[:\s]*/i);
-                let theme = parts[0] ? parts[0].trim() : "";
-                let body = parts[1] ? parts[1].trim() : theme;
-                if (!parts[1]) theme = "";
-
-                // სურათის ლოგიკის დაბრუნება
-                let displayHtml = body.includes('http') 
-                    ? `<img src="${body}" class="q-img">` 
-                    : body;
-
-                container.innerHTML += `
-                    <div class="question-card">
-                        ${theme ? `<div class="theme-header">🏷️ ${theme}</div>` : ''}
-                        <div style="font-size:1.2rem; font-weight:500; margin-bottom:20px;">${displayHtml}</div>
-                        <div class="timer-row">
-                            <button onclick="startT(this.nextElementSibling)" style="cursor:pointer; padding:8px 15px; border-radius:8px; border:none; background:#e2e8f0; font-weight:bold;">⏱️ ტაიმერი</button>
-                            <div class="timer-display">20</div>
-                        </div>
-                        <button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">პასუხი</button>
-                        <div class="ans-text">✅ ${ans}</div>
-                    </div>`;
-            });
-
-            if (num === 4 && currentPkgObj) {
-                container.innerHTML += `
-                    <div class="final-rating-box">
-                        <h2>🎉 თამაში დასრულდა!</h2>
-                        <p>როგორ შეაფასებდით ამ პაკეტს?</p>
-                        <select id="final-rate-select" class="mini-select" style="font-size:1.1rem; padding:10px;">
-                            <option value="5">5 ⭐ (შესანიშნავი)</option>
-                            <option value="4">4 ⭐</option><option value="3">3 ⭐</option>
-                            <option value="2">2 ⭐</option><option value="1">1 ⭐</option>
-                        </select>
-                        <button class="rate-submit-btn" style="padding:11px 20px; background:#0f172a; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; margin-left:10px;" 
-                                onclick="submitVote(${currentPkgObj.id}, ${currentPkgObj.total_score || 0}, ${currentPkgObj.votes_count || 0}, 'final-rate-select')">შეფასება</button>
-                    </div>`;
-            }
-            window.scrollTo(0, 0);
-        };
-
-        window.submitVote = async function(pkgId, currentTotal, currentVotes, selectId) {
-            const score = parseInt(document.getElementById(selectId).value);
-            const newTotal = currentTotal + score;
-            const newVotes = currentVotes + 1;
-            const newAvg = newTotal / newVotes;
-
-            const { error } = await _db.from('packages').update({ 
-                total_score: newTotal, votes_count: newVotes, rating: newAvg 
-            }).eq('id', pkgId);
-
-            if (!error) {
-                alert("მადლობა შეფასებისთვის!");
-                location.reload();
-            } else {
-                alert("შეცდომა ბაზასთან: შეამოწმეთ SQL პოლიტიკა.");
-            }
-        };
-
-        function startT(el) {
-            let s = 20; el.innerText = s;
-            const itv = setInterval(() => {
-                s--; el.innerText = s;
-                if(s <= 0) { clearInterval(itv); el.innerText = "⌛"; }
-            }, 1000);
-        }
-
-        initApp();
-    </script>
-</body>
-</html>
+        .timer-row { display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; padding: 15px 25px; border-radius: 18px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        .timer-display { font-size: 2rem; font-weight: 800; color: #ef4444; }
+        
+        .btn-ans { width: 100%; padding: 18px; background: #0f172a; color: white; border: none; border-radius: 18px; font-weight: bold; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
+        .btn-ans:hover { background: #1e293b; }
+        
+        .ans-text { display: none; margin-top: 20px; padding: 20px; background: #dcfce7; color: #166534; border-radius: 18px; font-weight: bold; border-left: 8px solid #22c55e; font-size: 1.2rem; }
+        
+        .q-img { max-width: 100%; border-radius: 15px; margin-bottom: 20
