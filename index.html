@@ -38,6 +38,7 @@
         .ans-text { display: none; margin-top: 20px; padding: 18px; background: #dcfce7; color: #166534; border-radius: 15px; font-weight: bold; border-left: 6px solid #22c55e; }
         
         .back-btn { background: #ef4444; color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; margin-bottom: 30px; font-weight: bold; }
+        .q-img { max-width: 100%; border-radius: 15px; margin-bottom: 15px; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
         /* შიდა შეფასების ბლოკი (IV რაუნდი) */
         .final-rating-box { background: #f1c40f; color: #0f172a; padding: 30px; border-radius: 20px; margin-top: 40px; border: 4px solid #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
@@ -79,33 +80,37 @@
             // Leaderboard
             const lb = document.getElementById('leaderboard-list');
             lb.innerHTML = "";
-            data.slice(0, 3).forEach((p, i) => {
-                lb.innerHTML += `<div class="lb-item"><span>${i+1}. ${p.author_name} - ${p.title}</span><span style="color:#f1c40f; font-weight:bold;">⭐ ${Number(p.rating || 0).toFixed(1)}</span></div>`;
-            });
+            if(data) {
+                data.slice(0, 3).forEach((p, i) => {
+                    lb.innerHTML += `<div class="lb-item"><span>${i+1}. ${p.author_name} - ${p.title}</span><span style="color:#f1c40f; font-weight:bold;">⭐ ${Number(p.rating || 0).toFixed(1)}</span></div>`;
+                });
+            }
 
             // Cards
             const container = document.getElementById('menu-container');
             container.innerHTML = "";
-            data.forEach(pkg => {
-                const card = document.createElement('div');
-                card.className = 'package-card';
-                card.innerHTML = `
-                    <div onclick="openPackage(${JSON.stringify(pkg).replace(/"/g, '&quot;')})" style="cursor:pointer">
-                        <div style="font-size:3rem; margin-bottom:10px;">${pkg.icon || '💡'}</div>
-                        <h2>${pkg.title}</h2>
-                        <p style="opacity:0.8; margin-bottom:5px;">ავტორი: ${pkg.author_name}</p>
-                        <div style="color:#f1c40f; font-weight:bold;">⭐ ${Number(pkg.rating || 0).toFixed(1)}</div>
-                    </div>
-                    <div class="card-rating-zone">
-                        <select id="card-rate-${pkg.id}" class="mini-select">
-                            <option value="5">5 ⭐</option><option value="4">4 ⭐</option>
-                            <option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option>
-                        </select>
-                        <button class="mini-rate-btn" onclick="submitVote(${pkg.id}, ${pkg.total_score || 0}, ${pkg.votes_count || 0}, 'card-rate-${pkg.id}')">შეფასება</button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
+            if(data) {
+                data.forEach(pkg => {
+                    const card = document.createElement('div');
+                    card.className = 'package-card';
+                    card.innerHTML = `
+                        <div onclick="openPackage(${JSON.stringify(pkg).replace(/"/g, '&quot;')})" style="cursor:pointer">
+                            <div style="font-size:3rem; margin-bottom:10px;">${pkg.icon || '💡'}</div>
+                            <h2>${pkg.title}</h2>
+                            <p style="opacity:0.8; margin-bottom:5px;">ავტორი: ${pkg.author_name}</p>
+                            <div style="color:#f1c40f; font-weight:bold;">⭐ ${Number(pkg.rating || 0).toFixed(1)}</div>
+                        </div>
+                        <div class="card-rating-zone">
+                            <select id="card-rate-${pkg.id}" class="mini-select">
+                                <option value="5">5 ⭐</option><option value="4">4 ⭐</option>
+                                <option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option>
+                            </select>
+                            <button class="mini-rate-btn" onclick="submitVote(${pkg.id}, ${pkg.total_score || 0}, ${pkg.votes_count || 0}, 'card-rate-${pkg.id}')">შეფასება</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
         }
 
         window.openPackage = function(pkg) {
@@ -128,10 +133,15 @@
                 let body = parts[1] ? parts[1].trim() : theme;
                 if (!parts[1]) theme = "";
 
+                // სურათის ლოგიკის დაბრუნება
+                let displayHtml = body.includes('http') 
+                    ? `<img src="${body}" class="q-img">` 
+                    : body;
+
                 container.innerHTML += `
                     <div class="question-card">
                         ${theme ? `<div class="theme-header">🏷️ ${theme}</div>` : ''}
-                        <div style="font-size:1.2rem; font-weight:500; margin-bottom:20px;">${body}</div>
+                        <div style="font-size:1.2rem; font-weight:500; margin-bottom:20px;">${displayHtml}</div>
                         <div class="timer-row">
                             <button onclick="startT(this.nextElementSibling)" style="cursor:pointer; padding:8px 15px; border-radius:8px; border:none; background:#e2e8f0; font-weight:bold;">⏱️ ტაიმერი</button>
                             <div class="timer-display">20</div>
@@ -151,7 +161,7 @@
                             <option value="4">4 ⭐</option><option value="3">3 ⭐</option>
                             <option value="2">2 ⭐</option><option value="1">1 ⭐</option>
                         </select>
-                        <button class="rate-submit-btn" style="padding:11px 20px; background:#0f172a; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;" 
+                        <button class="rate-submit-btn" style="padding:11px 20px; background:#0f172a; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; margin-left:10px;" 
                                 onclick="submitVote(${currentPkgObj.id}, ${currentPkgObj.total_score || 0}, ${currentPkgObj.votes_count || 0}, 'final-rate-select')">შეფასება</button>
                     </div>`;
             }
@@ -171,6 +181,8 @@
             if (!error) {
                 alert("მადლობა შეფასებისთვის!");
                 location.reload();
+            } else {
+                alert("შეცდომა ბაზასთან: შეამოწმეთ SQL პოლიტიკა.");
             }
         };
 
