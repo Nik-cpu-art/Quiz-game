@@ -3,26 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>იაზროვნე იმისთვის, რომ იარსებო!</title>
+    
+    <meta name="google-site-verification" content="O949qCETZXu9WBSrZV_8zpKB7w1PN6_FvVlMuLQpRzk" />
+
+    <title>იაზროვნე იმისთვის, რომ იარსებო! - ვიქტორინა</title>
+    <meta name="description" content="ქართული ინტელექტუალური თამაში. კითხვები კინოს, პოლიტიკისა და სხვადასხვა თემების შესახებ. იაზროვნე, უპასუხე და შეაფასე ავტორები!">
+    <meta name="keywords" content="ვიქტორინა, თამაში, იაზროვნე, ინტელექტუალური, ქართული თამაშები, კითხვა-პასუხი">
+    <meta name="author" content="ნიკა">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; text-align: center; padding: 20px; margin: 0; line-height: 1.6; }
         .header-title { font-size: 2.5rem; color: #f1c40f; margin-top: 40px; font-weight: 800; text-transform: uppercase; }
-        
         #leaderboard-section { max-width: 600px; margin: 0 auto 40px; background: #1e293b; padding: 20px; border-radius: 16px; border: 1px solid rgba(241, 196, 15, 0.4); }
         .lb-item { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #334155; }
-
         .menu-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; padding: 20px; }
         .package-card { background: #1e293b; padding: 25px; border-radius: 20px; border: 1px solid #334155; transition: 0.3s; cursor: pointer; }
         .package-card:hover { transform: translateY(-5px); border-color: #f1c40f; }
-
         #game-zone { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 50px; }
         .controls button { padding: 12px 20px; background: #334155; border: 1px solid #f1c40f; border-radius: 10px; color: #f1c40f; font-weight: bold; cursor: pointer; margin: 5px; }
-        
         .question-card { background: #ffffff; padding: 35px; border-radius: 25px; color: #1e293b; text-align: left; margin-bottom: 40px; box-shadow: 0 12px 30px rgba(0,0,0,0.3); border-top: 6px solid #3b82f6; }
         .instr-header { background: #6366f1; color: white; padding: 18px 25px; border-radius: 15px; font-weight: bold; margin-bottom: 10px; display: block; border-left: 8px solid #4338ca; }
-        
         .theme-header { background: #3b82f6; color: white; padding: 8px 15px; border-radius: 10px; font-weight: bold; margin-bottom: 15px; display: inline-block; font-size: 0.9rem; }
         .timer-row { display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; padding: 15px 25px; border-radius: 18px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
         .timer-display { font-size: 2rem; font-weight: 800; color: #ef4444; }
@@ -30,7 +32,6 @@
         .ans-text { display: none; margin-top: 20px; padding: 20px; background: #dcfce7; color: #166534; border-radius: 18px; font-weight: bold; border-left: 8px solid #22c55e; }
         .q-img { max-width: 100%; border-radius: 20px; margin-bottom: 20px; display: block; }
         .back-btn { background: #ef4444; color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; margin-bottom: 30px; font-weight: bold; }
-        
         .final-rating-box { background:#f1c40f; color:#0f172a; padding:35px; border-radius:25px; margin-top:50px; border:5px solid #ffffff; box-shadow:0 15px 40px rgba(0,0,0,0.4); }
         .mini-select { background: #0f172a; color: white; border: 1px solid #f1c40f; padding: 8px; border-radius: 8px; }
         .mini-rate-btn { background: #0f172a; color: white; border: none; padding: 12px 30px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
@@ -76,16 +77,10 @@
                 if (!authorStats[name]) {
                     authorStats[name] = { totalPoints: 0, totalVotes: 0 };
                 }
-
                 let votes = Number(pkg.votes_count || 0);
                 let score = Number(pkg.total_score || 0);
                 let rat = Number(pkg.rating || 0);
-
-                // თუ ბაზაში total_score არის 0, მაგრამ რეიტინგი არსებობს - აღვადგინოთ მათემატიკურად
-                if (score === 0 && rat > 0 && votes > 0) {
-                    score = rat * votes;
-                }
-
+                if (score === 0 && rat > 0 && votes > 0) score = rat * votes;
                 authorStats[name].totalPoints += score;
                 authorStats[name].totalVotes += votes;
             });
@@ -99,11 +94,7 @@
             const lb = document.getElementById('leaderboard-list');
             lb.innerHTML = "";
             sortedAuthors.slice(0, 5).forEach((auth, i) => {
-                lb.innerHTML += `
-                    <div class="lb-item">
-                        <span>${i+1}. ${auth.name} <small style="color:#94a3b8; font-size:0.75rem;">(${auth.votes} ხმა)</small></span>
-                        <span style="color:#f1c40f; font-weight:bold;">⭐ ${auth.avg.toFixed(1)}</span>
-                    </div>`;
+                lb.innerHTML += `<div class="lb-item"><span>${i+1}. ${auth.name} <small style="color:#94a3b8; font-size:0.75rem;">(${auth.votes} ხმა)</small></span><span style="color:#f1c40f; font-weight:bold;">⭐ ${auth.avg.toFixed(1)}</span></div>`;
             });
 
             const container = document.getElementById('menu-container');
@@ -112,11 +103,7 @@
                 const card = document.createElement('div');
                 card.className = 'package-card';
                 card.onclick = () => openPkg(pkg);
-                card.innerHTML = `
-                    <div style="font-size:3rem; margin-bottom:10px;">${pkg.icon || '💡'}</div>
-                    <h2>${pkg.title}</h2>
-                    <p style="color:#94a3b8;">ავტორი: ${pkg.author_name}</p>
-                    <div style="color:#f1c40f; font-weight:bold;">⭐ ${Number(pkg.rating || 0).toFixed(1)}</div>`;
+                card.innerHTML = `<div style="font-size:3rem; margin-bottom:10px;">${pkg.icon || '💡'}</div><h2>${pkg.title}</h2><p style="color:#94a3b8;">ავტორი: ${pkg.author_name}</p><div style="color:#f1c40f; font-weight:bold;">⭐ ${Number(pkg.rating || 0).toFixed(1)}</div>`;
                 container.appendChild(card);
             });
         }
@@ -133,13 +120,11 @@
             const container = document.getElementById('quiz-container');
             container.innerHTML = "";
             let qList = activePkgData.filter(r => r[0] && r[0].toString().trim() === num.toString());
-            
             qList.forEach((row) => {
                 let fullText = (row[1] || "").trim();
                 let ans = row[2] || "";
                 let instrHtml = "";
                 let bodyText = fullText;
-
                 if (fullText.toLowerCase().includes("ინსტრუქცია:")) {
                     let parts = fullText.split(/\n/);
                     let instrLine = parts.find(p => p.toLowerCase().includes("ინსტრუქცია:"));
@@ -148,62 +133,31 @@
                         bodyText = parts.filter(p => !p.toLowerCase().includes("ინსტრუქცია:")).join("\n").trim();
                     }
                 }
-
                 let qParts = bodyText.split(/კითხვა\s*\d+[:\s]*/i);
                 let theme = qParts[0] ? qParts[0].trim() : "";
                 let mainContent = qParts[1] ? qParts[1].trim() : theme;
                 if (!qParts[1]) theme = "";
-
                 if (!mainContent && !instrHtml) return;
-
                 let contentHtml = mainContent.includes('http') ? `<img src="${mainContent}" class="q-img">` : mainContent;
-
                 if (!mainContent || mainContent === "") {
                     container.innerHTML += `<div class="question-card" style="border-top:none; background:transparent; box-shadow:none; padding:10px 0;">${instrHtml}</div>`;
                 } else {
-                    container.innerHTML += `
-                        <div class="question-card">
-                            ${instrHtml}
-                            ${theme ? `<div class="theme-header">🏷️ ${theme}</div>` : ''}
-                            <div style="font-size:1.3rem; font-weight:500; margin-bottom:25px; color:#1e293b;">${contentHtml}</div>
-                            <div class="timer-row">
-                                <button onclick="startT(this.nextElementSibling)" style="cursor:pointer; padding:10px 18px; border-radius:10px; border:none; background:#e2e8f0; font-weight:bold; color:#475569;">⏱️ ტაიმერი</button>
-                                <div class="timer-display">20</div>
-                            </div>
-                            <button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button>
-                            <div class="ans-text">✅ პასუხი: ${ans}</div>
-                        </div>`;
+                    container.innerHTML += `<div class="question-card">${instrHtml}${theme ? `<div class="theme-header">🏷️ ${theme}</div>` : ''}<div style="font-size:1.3rem; font-weight:500; margin-bottom:25px; color:#1e293b;">${contentHtml}</div><div class="timer-row"><button onclick="startT(this.nextElementSibling)" style="cursor:pointer; padding:10px 18px; border-radius:10px; border:none; background:#e2e8f0; font-weight:bold; color:#475569;">⏱️ ტაიმერი</button><div class="timer-display">20</div></div><button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button><div class="ans-text">✅ პასუხი: ${ans}</div></div>`;
                 }
             });
-
             if (num === 4 && currentPkgObj) {
-                container.innerHTML += `
-                    <div class="final-rating-box">
-                        <h2>🎉 პაკეტი დასრულდა!</h2>
-                        <p>შეაფასეთ ეს თემატიკა:</p>
-                        <select id="final-rate-select" class="mini-select">
-                            <option value="5">5 ⭐ (საუკეთესო)</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option>
-                        </select><br>
-                        <button class="mini-rate-btn" onclick="vote(${currentPkgObj.id}, ${currentPkgObj.total_score || 0}, ${currentPkgObj.votes_count || 0}, 'final-rate-select')">გაგზავნა</button>
-                    </div>`;
+                container.innerHTML += `<div class="final-rating-box"><h2>🎉 პაკეტი დასრულდა!</h2><p>შეაფასეთ ეს თემატიკა:</p><select id="final-rate-select" class="mini-select"><option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option></select><br><button class="mini-rate-btn" onclick="vote(${currentPkgObj.id}, ${currentPkgObj.total_score || 0}, ${currentPkgObj.votes_count || 0}, 'final-rate-select')">გაგზავნა</button></div>`;
             }
             window.scrollTo(0, 0);
         };
 
         window.vote = async function(id, tot, cnt, selId) {
             const val = parseInt(document.getElementById(selId).value);
-            // ხმის მიცემისას აუცილებლად ვაახლებთ total_score-საც
             const newCount = cnt + 1;
             const newTotal = tot + val;
             const newRating = newTotal / newCount;
-
-            const { error } = await _db.from('packages').update({ 
-                total_score: newTotal, 
-                votes_count: newCount, 
-                rating: newRating 
-            }).eq('id', id);
-            
-            if(!error) { alert("მადლობა შეფასებისთვის!"); location.reload(); }
+            const { error } = await _db.from('packages').update({ total_score: newTotal, votes_count: newCount, rating: newRating }).eq('id', id);
+            if(!error) { alert("მადლობა!"); location.reload(); }
         };
 
         function startT(el) {
