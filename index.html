@@ -5,29 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>იაზროვნე იმისთვის, რომ იარსებო!</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; text-align: center; padding: 20px; margin: 0; }
         .header-title { font-size: 2.8rem; color: #f1c40f; margin-top: 40px; font-weight: bold; }
         .sub-text { opacity: 0.7; margin-bottom: 40px; font-size: 1.1rem; }
         
-        .menu-container { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-            gap: 20px; 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: 20px;
-        }
-        
+        /* მენიუს დიზაინი */
+        .menu-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding: 20px; }
         .package-card { 
             background: #1e293b; padding: 25px; border-radius: 15px; cursor: pointer; 
-            border: 2px solid #334155; transition: 0.3s;
-            display: flex; flex-direction: column; align-items: center;
+            border: 2px solid #334155; transition: 0.3s; position: relative;
         }
         .package-card:hover { transform: translateY(-8px); border-color: #f1c40f; background: #334155; }
         .package-card .icon { font-size: 2.8rem; margin-bottom: 10px; }
-        .package-card h2 { font-size: 1.2rem; margin: 0; color: #f1c40f; }
+        .package-card h2 { font-size: 1.3rem; margin: 5px 0; color: #f1c40f; }
+        .author-tag { font-size: 0.8rem; opacity: 0.6; margin-bottom: 10px; }
+        .rating-display { color: #f1c40f; font-weight: bold; font-size: 0.9rem; }
 
+        /* თამაშის ზონა */
         #game-zone { display: none; max-width: 800px; margin: 0 auto; }
         .back-btn { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
         .controls { margin-bottom: 25px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
@@ -38,52 +34,27 @@
         .timer-display { font-size: 1.3rem; font-weight: bold; color: #ef4444; min-width: 40px; }
         .ans-text { display: none; margin-top: 15px; color: #10b981; font-weight: bold; border-top: 2px solid #e2e8f0; padding-top: 10px; }
         .q-img { max-width: 100%; border-radius: 8px; }
+
+        /* რეიტინგის ღილაკები */
+        .vote-section { margin-top: 30px; padding: 20px; border-top: 1px solid #334155; }
+        .vote-btn { background: #334155; border: 1px solid #f1c40f; color: white; padding: 8px 15px; cursor: pointer; border-radius: 5px; margin: 0 5px; transition: 0.2s; }
+        .vote-btn:hover { background: #f1c40f; color: #0f172a; }
     </style>
 </head>
 <body>
 
     <div id="home-page">
         <h1 class="header-title">"იაზროვნე იმისთვის, რომ იარსებო!"</h1>
-        <p class="sub-text">ამოირჩიე სასურველი პაკეტი</p>
-        
-        <div class="menu-container">
-            <div class="package-card" onclick="loadPackage('https://docs.google.com/spreadsheets/d/e/2PACX-1vTPbFyJhfjucAuCP4lUcZVjh2yiMChHcSxGjqIAWc8ixsSaIWeVVjTPKCxJyKJXkL8cAFe2mYwuFMuF/pub?output=csv', 'პოლიტიკა')">
-                <div class="icon">⚖️</div><h2>პოლიტიკა</h2>
-            </div>
-            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'ფეხბურთი')">
-                <div class="icon">⚽</div><h2>ფეხბურთი</h2>
-            </div>
-            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'გეოგრაფია')">
-                <div class="icon">🌍</div><h2>გეოგრაფია</h2>
-            </div>
-            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'სპორტი')">
-                <div class="icon">🏆</div><h2>სპორტი</h2>
-            </div>
-            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'მუსიკა')">
-                <div class="icon">🎵</div><h2>მუსიკა</h2>
-            </div>
-            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'კინო')">
-                <div class="icon">🎬</div><h2>კინო</h2>
-            </div>
-            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'ხელოვნება')">
-                <div class="icon">🎨</div><h2>ხელოვნება</h2>
-            </div>
-            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'კალათბურთი')">
-                <div class="icon">🏀</div><h2>კალათბურთი</h2>
-            </div>
-            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'ჰიბრიდი')">
-                <div class="icon">🌀</div><h2>ჰიბრიდი</h2>
-            </div>
-            <div class="package-card" onclick="loadPackage('ლინკი_აქ', 'სვაიაკი')">
-                <div class="icon">💡</div><h2>სვაიაკი</h2>
-            </div>
-        </div>
+        <p class="sub-text">ავტორების პლატფორმა - აირჩიე პაკეტი</p>
+        <div id="menu-loader">იტვირთება პაკეტები ბაზიდან...</div>
+        <div class="menu-container" id="menu-container"></div>
     </div>
 
     <div id="game-zone">
         <button class="back-btn" onclick="location.reload()">⬅️ მენიუ</button>
-        <h1 id="pkg-name-display" style="color: #f1c40f;"></h1>
-        <h2 id="round-title-display" style="opacity: 0.8;"></h2>
+        <h1 id="pkg-name-display" style="color: #f1c40f; margin-bottom: 5px;"></h1>
+        <div id="pkg-author-display" class="author-tag" style="font-size: 1rem;"></div>
+        
         <div class="controls">
             <button onclick="filterRound(1)">რაუნდი I</button>
             <button onclick="filterRound(2)">ბარათონი</button>
@@ -91,22 +62,67 @@
             <button onclick="filterRound(4)">რაუნდი IV</button>
         </div>
         <div id="quiz-container"></div>
+
+        <div class="vote-section" id="vote-section">
+            <p>მოგეწონათ პაკეტი? შეაფასეთ:</p>
+            <button class="vote-btn" onclick="submitVote(1)">1 ⭐</button>
+            <button class="vote-btn" onclick="submitVote(2)">2 ⭐</button>
+            <button class="vote-btn" onclick="submitVote(3)">3 ⭐</button>
+            <button class="vote-btn" onclick="submitVote(4)">4 ⭐</button>
+            <button class="vote-btn" onclick="submitVote(5)">5 ⭐</button>
+        </div>
     </div>
 
     <script>
+        // Supabase კონფიგურაცია
+        const SUPABASE_URL = "https://jaxqzgnjanbnyvhrnlwu.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpheHF6Z25qYW5ibnl2aHJubHd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjY5NDAsImV4cCI6MjA4Mjc0Mjk0MH0.Wfcqhe5aJlFhwknTfol5_lcdKVcNQFjJqj0X7U5WLu4";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         let allData = [];
         let activeIntervals = {};
+        let currentPackageId = null;
 
-        function loadPackage(url, name) {
-            if (url === 'ლინკი_აქ') {
-                alert("ამ პაკეტის ცხრილი ჯერ არ არის მიბმული!");
+        // 1. პაკეტების წამოღება ბაზიდან
+        async function fetchPackages() {
+            const { data, error } = await supabase
+                .from('packages')
+                .select('*')
+                .order('rating', { ascending: false });
+
+            if (error) {
+                console.error("ბაზის შეცდომა:", error);
+                document.getElementById('menu-loader').innerText = "ვერ მოხერხდა პაკეტების ჩატვირთვა.";
                 return;
             }
+
+            const container = document.getElementById('menu-container');
+            document.getElementById('menu-loader').style.display = 'none';
+            container.innerHTML = "";
+
+            data.forEach(pkg => {
+                const card = document.createElement('div');
+                card.className = 'package-card';
+                card.onclick = () => loadPackage(pkg);
+                card.innerHTML = `
+                    <div class="icon">${pkg.icon || '💡'}</div>
+                    <h2>${pkg.title}</h2>
+                    <div class="author-tag">ავტორი: ${pkg.author_name}</div>
+                    <div class="rating-display">⭐ ${pkg.rating ? Number(pkg.rating).toFixed(1) : '0.0'} (${pkg.votes_count || 0} ხმა)</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 2. კონკრეტული პაკეტის ჩატვირთვა
+        function loadPackage(pkg) {
+            currentPackageId = pkg.id;
             document.getElementById('home-page').style.display = 'none';
             document.getElementById('game-zone').style.display = 'block';
-            document.getElementById('pkg-name-display').innerText = name;
+            document.getElementById('pkg-name-display').innerText = pkg.title;
+            document.getElementById('pkg-author-display').innerText = "ავტორი: " + pkg.author_name;
             
-            Papa.parse(url, {
+            Papa.parse(pkg.csv_url, {
                 download: true,
                 header: false,
                 skipEmptyLines: true,
@@ -117,6 +133,7 @@
             });
         }
 
+        // 3. რაუნდების ფილტრაცია
         window.filterRound = function(num) {
             Object.values(activeIntervals).forEach(clearInterval);
             activeIntervals = {};
@@ -132,27 +149,48 @@
                 const div = document.createElement('div');
                 div.className = 'question-card';
                 div.innerHTML = `
-                    ${q.includes('http') ? `<img src="${q}" class="q-img">` : `<div style="font-weight:bold; font-size:1.1rem;">${q}</div>`}
+                    ${q.includes('http') ? `<img src="${q}" class="q-img">` : `<div style="font-weight:bold;">${q}</div>`}
                     <div class="timer-container">
-                        <button onclick="startT('${tid}', 20, this)" style="cursor:pointer; background:#27ae60; color:white; border:none; padding:5px 10px; border-radius:4px;">⏱️ 20წ</button>
+                        <button onclick="startT('${tid}', 20, this)">⏱️ 20წ</button>
                         <div id="${tid}" class="timer-display">20</div>
                     </div>
-                    <button onclick="this.nextElementSibling.style.display='block'; this.style.display='none'" style="cursor:pointer; background:#3498db; color:white; border:none; padding:8px 15px; border-radius:5px;">პასუხი</button>
+                    <button onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">პასუხი</button>
                     <div class="ans-text">✅ ${a}</div>
                 `;
                 container.appendChild(div);
             });
-            window.scrollTo(0,0);
+        };
+
+        // 4. რეიტინგის გაგზავნა (SQL-ის მსგავსი ლოგიკა)
+        async function submitVote(score) {
+            // რეალური SQL ლოგიკა: ვიღებთ ძველ მონაცემებს და ვაახლებთ საშუალოს
+            const { data: pkg } = await supabase.from('packages').select('*').eq('id', currentPackageId).single();
+            
+            const newVotesCount = (pkg.votes_count || 0) + 1;
+            const newRating = ((Number(pkg.rating || 0) * (pkg.votes_count || 0)) + score) / newVotesCount;
+
+            const { error } = await supabase
+                .from('packages')
+                .update({ rating: newRating, votes_count: newVotesCount })
+                .eq('id', currentPackageId);
+
+            if (!error) {
+                alert("მადლობა! თქვენი შეფასება მიღებულია.");
+                document.getElementById('vote-section').innerHTML = "<p>✅ შეფასებულია!</p>";
+            }
         }
 
         window.startT = function(id, dur, btn) {
             if (activeIntervals[id]) return;
-            let t = dur; btn.disabled = true; btn.style.opacity = "0.5";
+            let t = dur; btn.disabled = true;
             activeIntervals[id] = setInterval(() => {
                 t--; document.getElementById(id).textContent = t;
                 if(t <= 0) { clearInterval(activeIntervals[id]); document.getElementById(id).textContent = "⌛ დრო გავიდა!"; }
             }, 1000);
         }
+
+        // საიტის ჩართვისას
+        fetchPackages();
     </script>
 </body>
 </html>
