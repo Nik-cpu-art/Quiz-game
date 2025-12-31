@@ -41,7 +41,7 @@
     <div id="home-page">
         <h1 class="header-title">იაზროვნე იმისთვის, რომ იარსებო!</h1>
         <div id="leaderboard-section">
-            <h3 style="color: #f1c40f; margin-bottom: 15px;">🏆 საუკეთესო ავტორები (საშუალო რეიტინგი)</h3>
+            <h3 style="color: #f1c40f; margin-bottom: 15px;">🏆 საუკეთესო ავტორები</h3>
             <div id="leaderboard-list">იტვირთება...</div>
         </div>
         <div id="menu-container" class="menu-container"></div>
@@ -70,18 +70,26 @@
             const { data } = await _db.from('packages').select('*');
             if (!data) return;
 
-            // ზუსტი მათემატიკური დაჯამება ავტორებისთვის
             const authorStats = {};
             data.forEach(pkg => {
                 const name = pkg.author_name.trim();
                 if (!authorStats[name]) {
                     authorStats[name] = { totalPoints: 0, totalVotes: 0 };
                 }
-                authorStats[name].totalPoints += Number(pkg.total_score || 0);
-                authorStats[name].totalVotes += Number(pkg.votes_count || 0);
+
+                let votes = Number(pkg.votes_count || 0);
+                let score = Number(pkg.total_score || 0);
+                let rat = Number(pkg.rating || 0);
+
+                // თუ ბაზაში total_score არის 0, მაგრამ რეიტინგი არსებობს - აღვადგინოთ მათემატიკურად
+                if (score === 0 && rat > 0 && votes > 0) {
+                    score = rat * votes;
+                }
+
+                authorStats[name].totalPoints += score;
+                authorStats[name].totalVotes += votes;
             });
 
-            // რეალური საშუალო რეიტინგის გამოთვლა
             const sortedAuthors = Object.keys(authorStats).map(name => ({
                 name: name,
                 avg: authorStats[name].totalVotes > 0 ? (authorStats[name].totalPoints / authorStats[name].totalVotes) : 0,
@@ -93,7 +101,7 @@
             sortedAuthors.slice(0, 5).forEach((auth, i) => {
                 lb.innerHTML += `
                     <div class="lb-item">
-                        <span>${i+1}. ${auth.name} <small style="color:#94a3b8; font-size:0.7rem;">(${auth.votes} ხმა)</small></span>
+                        <span>${i+1}. ${auth.name} <small style="color:#94a3b8; font-size:0.75rem;">(${auth.votes} ხმა)</small></span>
                         <span style="color:#f1c40f; font-weight:bold;">⭐ ${auth.avg.toFixed(1)}</span>
                     </div>`;
             });
@@ -184,10 +192,15 @@
 
         window.vote = async function(id, tot, cnt, selId) {
             const val = parseInt(document.getElementById(selId).value);
+            // ხმის მიცემისას აუცილებლად ვაახლებთ total_score-საც
+            const newCount = cnt + 1;
+            const newTotal = tot + val;
+            const newRating = newTotal / newCount;
+
             const { error } = await _db.from('packages').update({ 
-                total_score: tot + val, 
-                votes_count: cnt + 1, 
-                rating: (tot + val) / (cnt + 1) 
+                total_score: newTotal, 
+                votes_count: newCount, 
+                rating: newRating 
             }).eq('id', id);
             
             if(!error) { alert("მადლობა შეფასებისთვის!"); location.reload(); }
