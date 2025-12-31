@@ -42,4 +42,143 @@
         
         .ans-text { display: none; margin-top: 20px; padding: 20px; background: #dcfce7; color: #166534; border-radius: 18px; font-weight: bold; border-left: 8px solid #22c55e; font-size: 1.2rem; }
         
-        .q-img { max-width: 100%; border-radius: 15px; margin-bottom: 20
+        .q-img { max-width: 100%; border-radius: 15px; margin-bottom: 20px; display: block; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .back-btn { background: #ef4444; color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; margin-bottom: 30px; font-weight: bold; }
+
+        .final-rating-box { background: #f1c40f; color: #0f172a; padding: 35px; border-radius: 25px; margin-top: 50px; border: 5px solid #ffffff; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
+    </style>
+</head>
+<body>
+
+    <div id="home-page">
+        <h1 class="header-title">იაზროვნე იმისთვის, რომ იარსებო!</h1>
+        <div id="leaderboard-section">
+            <h3 style="color: #f1c40f; margin-bottom: 15px;">🏆 საუკეთესო ავტორები</h3>
+            <div id="leaderboard-list">იტვირთება...</div>
+        </div>
+        <div id="menu-container" class="menu-container"></div>
+    </div>
+
+    <div id="game-zone">
+        <button class="back-btn" onclick="location.reload()">⬅️ მენიუ</button>
+        <h1 id="pkg-name-display" style="color: #f1c40f; margin-bottom: 30px;"></h1>
+        <div class="controls">
+            <button onclick="filterRound(1)">რაუნდი I</button>
+            <button onclick="filterRound(2)">ბარათონი</button>
+            <button onclick="filterRound(3)">პაპა კარლო</button>
+            <button onclick="filterRound(4)">რაუნდი IV</button>
+        </div>
+        <div id="quiz-container"></div>
+    </div>
+
+    <script>
+        const S_URL = "https://jaxqzgnjanbnyvhrnlwu.supabase.co";
+        const S_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpheHF6Z25qYW5ibnl2aHJubHd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjY5NDAsImV4cCI6MjA4Mjc0Mjk0MH0.Wfcqhe5aJlFhwknTfol5_lcdKVcNQFjJqj0X7U5WLu4";
+        const _db = supabase.createClient(S_URL, S_KEY);
+        let activePkgData = [];
+        let currentPkgObj = null;
+
+        async function initApp() {
+            const { data } = await _db.from('packages').select('*').order('rating', { ascending: false });
+            const lb = document.getElementById('leaderboard-list');
+            lb.innerHTML = "";
+            data?.slice(0, 3).forEach((p, i) => {
+                lb.innerHTML += `<div class="lb-item"><span>${i+1}. ${p.author_name} - ${p.title}</span><span style="color:#f1c40f; font-weight:bold;">⭐ ${Number(p.rating || 0).toFixed(1)}</span></div>`;
+            });
+
+            const container = document.getElementById('menu-container');
+            container.innerHTML = "";
+            data?.forEach(pkg => {
+                const card = document.createElement('div');
+                card.className = 'package-card';
+                card.innerHTML = `
+                    <div onclick="openPkg(${JSON.stringify(pkg).replace(/"/g, '&quot;')})" style="cursor:pointer">
+                        <div style="font-size:3rem; margin-bottom:10px;">${pkg.icon || '💡'}</div>
+                        <h2>${pkg.title}</h2>
+                        <p style="opacity:0.8;">ავტორი: ${pkg.author_name}</p>
+                        <div style="color:#f1c40f; font-weight:bold;">⭐ ${Number(pkg.rating || 0).toFixed(1)}</div>
+                    </div>
+                    <div class="card-rating-zone">
+                        <select id="card-rate-${pkg.id}" class="mini-select">
+                            <option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option>
+                        </select>
+                        <button class="mini-rate-btn" onclick="vote(${pkg.id}, ${pkg.total_score || 0}, ${pkg.votes_count || 0}, 'card-rate-${pkg.id}')">შეფასება</button>
+                    </div>`;
+                container.appendChild(card);
+            });
+        }
+
+        window.openPkg = function(pkg) {
+            currentPkgObj = pkg;
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('game-zone').style.display = 'block';
+            document.getElementById('pkg-name-display').innerText = pkg.title;
+            Papa.parse(pkg.csv_url, { download: true, complete: (res) => { activePkgData = res.data; filterRound(1); } });
+        };
+
+        window.filterRound = function(num) {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = "";
+            let qList = activePkgData.filter(r => r[0] && r[0].toString().trim() === num.toString());
+            
+            qList.forEach((row, idx) => {
+                let rawQ = (row[1] || "").trim(); let ans = row[2] || "";
+                
+                // ინსტრუქციის გამოყოფა
+                let isInstr = rawQ.toLowerCase().includes("ინსტრუქცია:");
+                let instrText = "";
+                if(isInstr) {
+                    let partsInstr = rawQ.split(/ინსტრუქცია:/i);
+                    instrText = partsInstr[1].split(/\n/)[0]; // იღებს მხოლოდ ინსტრუქციის ხაზს
+                    rawQ = rawQ.replace(/ინსტრუქცია:.*?\n/i, ""); // აშორებს ტექსტს
+                }
+
+                let parts = rawQ.split(/კითხვა\s*\d+[:\s]*/i);
+                let theme = parts[0] ? parts[0].trim() : "";
+                let body = parts[1] ? parts[1].trim() : theme;
+                if (!parts[1]) theme = "";
+
+                let contentHtml = body.includes('http') ? `<img src="${body}" class="q-img">` : body;
+
+                container.innerHTML += `
+                    <div class="question-card">
+                        ${instrText ? `<div class="instr-header">📢 ინსტრუქცია: ${instrText}</div>` : ''}
+                        ${theme ? `<div class="theme-header">🏷️ ${theme}</div>` : ''}
+                        <div style="font-size:1.3rem; font-weight:500; margin-bottom:25px; color:#1e293b;">${contentHtml}</div>
+                        <div class="timer-row">
+                            <button onclick="startT(this.nextElementSibling)" style="cursor:pointer; padding:10px 18px; border-radius:10px; border:none; background:#e2e8f0; font-weight:bold; color:#475569;">⏱️ ტაიმერი</button>
+                            <div class="timer-display">20</div>
+                        </div>
+                        <button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button>
+                        <div class="ans-text">✅ პასუხი: ${ans}</div>
+                    </div>`;
+            });
+
+            if (num === 4 && currentPkgObj) {
+                container.innerHTML += `
+                    <div class="final-rating-box">
+                        <h2>🎉 პაკეტი დასრულდა!</h2>
+                        <p>მოგეწონათ კითხვები? შეაფასეთ ავტორი:</p>
+                        <select id="final-rate-select" class="mini-select" style="font-size:1.1rem; padding:10px; margin-bottom:10px;">
+                            <option value="5">5 ⭐ (საუკეთესო)</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option>
+                        </select><br>
+                        <button class="mini-rate-btn" style="padding:12px 25px; font-size:1rem;" onclick="vote(${currentPkgObj.id}, ${currentPkgObj.total_score || 0}, ${currentPkgObj.votes_count || 0}, 'final-rate-select')">გაგზავნა</button>
+                    </div>`;
+            }
+            window.scrollTo(0, 0);
+        };
+
+        window.vote = async function(id, tot, cnt, selId) {
+            const val = parseInt(document.getElementById(selId).value);
+            const { error } = await _db.from('packages').update({ total_score: tot+val, votes_count: cnt+1, rating: (tot+val)/(cnt+1) }).eq('id', id);
+            if(!error) { alert("მადლობა!"); location.reload(); }
+        };
+
+        function startT(el) {
+            let s = 20; el.innerText = s;
+            const itv = setInterval(() => { s--; el.innerText = s; if(s<=0){ clearInterval(itv); el.innerText="⌛"; } }, 1000);
+        }
+        initApp();
+    </script>
+</body>
+</html>
