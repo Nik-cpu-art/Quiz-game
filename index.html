@@ -153,4 +153,45 @@
                         ${theme ? `<div class="theme-header">🏷️ ${theme}</div>` : ''}
                         ${body ? `<div style="font-size:1.3rem; font-weight:500; margin-bottom:25px; color:#1e293b;">${contentHtml}</div>` : ''}
                         <div class="timer-row">
-                            <button onclick="startT(this.nextElementSibling)"
+                            <button onclick="startT(this.nextElementSibling)" style="cursor:pointer; padding:10px 18px; border-radius:10px; border:none; background:#e2e8f0; font-weight:bold; color:#475569;">⏱️ ტაიმერი</button>
+                            <div class="timer-display">20</div>
+                        </div>
+                        <button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button>
+                        <div class="ans-text">✅ პასუხი: ${ans}</div>
+                    </div>`;
+            });
+
+            // მეოთხე რაუნდის ბოლოს შეფასების ღილაკი
+            if (num === 4 && currentPkgObj) {
+                container.innerHTML += `
+                    <div class="final-rating-box">
+                        <h2>🎉 პაკეტი დასრულდა!</h2>
+                        <p>მოგეწონათ კითხვები? შეაფასეთ ავტორი:</p>
+                        <select id="final-rate-select" class="mini-select" style="font-size:1.1rem; padding:10px; margin-bottom:15px;">
+                            <option value="5">5 ⭐ (საუკეთესო)</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option>
+                        </select><br>
+                        <button class="mini-rate-btn" style="padding:12px 30px; font-size:1rem;" onclick="vote(${currentPkgObj.id}, ${currentPkgObj.total_score || 0}, ${currentPkgObj.votes_count || 0}, 'final-rate-select')">გაგზავნა</button>
+                    </div>`;
+            }
+            window.scrollTo(0, 0);
+        };
+
+        window.vote = async function(id, tot, cnt, selId) {
+            const val = parseInt(document.getElementById(selId).value);
+            const { error } = await _db.from('packages').update({ 
+                total_score: tot + val, 
+                votes_count: cnt + 1, 
+                rating: (tot + val) / (cnt + 1) 
+            }).eq('id', id);
+            
+            if(!error) { alert("მადლობა შეფასებისთვის!"); location.reload(); }
+        };
+
+        function startT(el) {
+            let s = 20; el.innerText = s;
+            const itv = setInterval(() => { s--; el.innerText = s; if(s<=0){ clearInterval(itv); el.innerText="⌛"; } }, 1000);
+        }
+        initApp();
+    </script>
+</body>
+</html>
