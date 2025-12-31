@@ -7,20 +7,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: 'Segoe UI', 'Helvetica Neue', sans-serif; background: #0f172a; color: white; text-align: center; padding: 20px; margin: 0; line-height: 1.6; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; text-align: center; padding: 20px; margin: 0; line-height: 1.6; }
         .header-title { font-size: 2.5rem; color: #f1c40f; margin-top: 40px; font-weight: 800; text-transform: uppercase; }
-        .sub-text { opacity: 0.6; margin-bottom: 30px; font-size: 1rem; }
         
         /* მენიუ */
-        #leaderboard-section { max-width: 600px; margin: 0 auto 40px; background: #1e293b; padding: 20px; border-radius: 16px; border: 1px solid rgba(241, 196, 15, 0.3); }
-        .menu-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .menu-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 40px auto; padding: 20px; }
         .package-card { background: #1e293b; padding: 30px; border-radius: 20px; cursor: pointer; border: 1px solid #334155; transition: 0.3s; }
         .package-card:hover { transform: translateY(-10px); border-color: #f1c40f; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
 
         /* თამაშის ზონა */
         #game-zone { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 50px; }
         .controls { margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        .controls button { padding: 12px 20px; background: #334155; border: 1px solid #f1c40f; border-radius: 10px; color: #f1c40f; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .controls button { padding: 12px 20px; background: #334155; border: 1px solid #f1c40f; border-radius: 10px; color: #f1c40f; font-weight: bold; cursor: pointer; }
         .controls button:hover { background: #f1c40f; color: #0f172a; }
 
         /* კითხვის ბარათი */
@@ -32,40 +30,33 @@
             text-align: left; 
             margin-bottom: 35px; 
             box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            border-top: 8px solid #3b82f6;
+            border-top: 4px solid #3b82f6;
         }
 
-        /* ბეიჯების სტილი */
-        .theme-badge {
-            display: inline-block;
+        /* ბეიჯების ახალი სტილი */
+        .theme-header {
             background: #3b82f6;
             color: white;
-            padding: 6px 15px;
-            border-radius: 10px;
+            padding: 10px 20px;
+            border-radius: 12px;
             font-weight: bold;
-            font-size: 0.95rem;
-            margin-bottom: 10px;
-            box-shadow: 0 3px 6px rgba(59, 130, 246, 0.2);
+            font-size: 1rem;
+            margin-bottom: 15px;
+            display: block; /* მთელ სიგანეზე */
         }
-        .question-number-badge {
+        .q-number-badge {
             display: inline-block;
             background: #f1f5f9;
             color: #475569;
-            padding: 6px 15px;
-            border-radius: 10px;
+            padding: 5px 15px;
+            border-radius: 8px;
             font-weight: bold;
-            font-size: 0.95rem;
-            margin-left: 8px;
-            border: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            border: 1px solid #cbd5e1;
         }
 
-        .question-body { 
-            font-size: 1.2rem; 
-            font-weight: 500; 
-            color: #1e293b; 
-            margin: 20px 0;
-            white-space: pre-line;
-        }
+        .question-body { font-size: 1.2rem; font-weight: 500; color: #1e293b; margin-bottom: 25px; white-space: pre-line; }
 
         /* ტაიმერი და პასუხი */
         .timer-row { display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 15px 25px; border-radius: 15px; margin-bottom: 15px; }
@@ -73,8 +64,8 @@
         .btn-ans { width: 100%; padding: 16px; background: #0f172a; color: white; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
         .ans-text { display: none; margin-top: 20px; padding: 18px; background: #dcfce7; color: #166534; border-radius: 15px; font-weight: bold; font-size: 1.2rem; border-left: 6px solid #22c55e; }
         
-        .instruction-box { background: #f1c40f; color: #0f172a; padding: 18px; border-radius: 15px; margin-bottom: 35px; font-weight: bold; font-size: 1.1rem; text-align: center; }
-        .q-img { max-width: 100%; border-radius: 15px; margin-bottom: 20px; display: block; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .instruction-box { background: #f1c40f; color: #0f172a; padding: 18px; border-radius: 15px; margin-bottom: 35px; font-weight: bold; }
+        .q-img { max-width: 100%; border-radius: 15px; margin-bottom: 20px; display: block; }
         .back-btn { background: #ef4444; color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; margin-bottom: 30px; font-weight: bold; }
     </style>
 </head>
@@ -82,18 +73,12 @@
 
     <div id="home-page">
         <h1 class="header-title">იაზროვნე იმისთვის, რომ იარსებო!</h1>
-        <p class="sub-text">ავტორების პლატფორმა</p>
-        <div id="leaderboard-section">
-            <h3 style="color: #f1c40f; margin: 0 0 15px 0;">🏆 საუკეთესო ავტორები</h3>
-            <div id="leaderboard-list">იტვირთება რეიტინგი...</div>
-        </div>
         <div id="menu-container" class="menu-container"></div>
     </div>
 
     <div id="game-zone">
-        <button class="back-btn" onclick="location.reload()">⬅️ მთავარი მენიუ</button>
-        <h1 id="pkg-name-display" style="color: #f1c40f; margin-bottom: 5px;"></h1>
-        <div id="pkg-author-display" style="opacity: 0.6; margin-bottom: 30px;"></div>
+        <button class="back-btn" onclick="location.reload()">⬅️ მენიუ</button>
+        <h1 id="pkg-name-display" style="color: #f1c40f; margin-bottom: 30px;"></h1>
         
         <div class="controls">
             <button onclick="filterRound(1)">რაუნდი I</button>
@@ -113,32 +98,14 @@
         let timersList = {};
 
         async function initApp() {
-            const { data, error } = await _db.from('packages').select('*').order('rating', { ascending: false });
-            if (error) return;
-
+            const { data } = await _db.from('packages').select('*').order('rating', { ascending: false });
             const container = document.getElementById('menu-container');
-            container.innerHTML = "";
             data.forEach(pkg => {
                 const card = document.createElement('div');
                 card.className = 'package-card';
                 card.onclick = () => loadSelectedPkg(pkg);
-                card.innerHTML = `
-                    <div style="font-size:3.5rem; margin-bottom:15px;">${pkg.icon || '💡'}</div>
-                    <h2 style="margin:10px 0;">${pkg.title}</h2>
-                    <p style="opacity:0.7;">ავტორი: ${pkg.author_name}</p>
-                    <div style="color:#f1c40f; font-weight:bold; font-size:1.1rem;">⭐ ${Number(pkg.rating).toFixed(1)}</div>
-                `;
+                card.innerHTML = `<div style="font-size:3rem; margin-bottom:10px;">${pkg.icon || '💡'}</div><h2>${pkg.title}</h2><p>ავტორი: ${pkg.author_name}</p>`;
                 container.appendChild(card);
-            });
-
-            const lb = document.getElementById('leaderboard-list');
-            lb.innerHTML = "";
-            data.slice(0, 3).forEach((p, i) => {
-                lb.innerHTML += `
-                    <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #334155;">
-                        <span>${i+1}. ${p.author_name}</span>
-                        <span style="color:#f1c40f; font-weight:bold;">⭐ ${Number(p.rating).toFixed(1)}</span>
-                    </div>`;
             });
         }
 
@@ -146,75 +113,60 @@
             document.getElementById('home-page').style.display = 'none';
             document.getElementById('game-zone').style.display = 'block';
             document.getElementById('pkg-name-display').innerText = pkg.title;
-            document.getElementById('pkg-author-display').innerText = "ავტორი: " + pkg.author_name;
-            
-            Papa.parse(pkg.csv_url, { 
-                download: true, 
-                complete: (results) => { 
-                    activePkgData = results.data; 
-                    filterRound(1); 
-                } 
-            });
+            Papa.parse(pkg.csv_url, { download: true, complete: (res) => { activePkgData = res.data; filterRound(1); } });
         }
 
-        window.filterRound = function(roundNum) {
+        window.filterRound = function(num) {
             Object.values(timersList).forEach(clearInterval);
-            timersList = {};
             const container = document.getElementById('quiz-container');
             container.innerHTML = "";
             
-            const roundRows = activePkgData.filter(r => r[0] && r[0].toString().trim() === roundNum.toString());
-            
-            roundRows.forEach((row, idx) => {
-                let rawQuestion = row[1] || "";
-                let answer = row[2] || "";
+            activePkgData.filter(r => r[0] && r[0].toString().trim() === num.toString()).forEach((row, idx) => {
+                let rawQ = row[1] || ""; let ans = row[2] || "";
 
-                if (rawQuestion.toLowerCase().startsWith("ინსტრუქცია:")) {
-                    container.innerHTML += `<div class="instruction-box">💡 ${rawQuestion.replace("ინსტრუქცია:", "").trim()}</div>`;
+                if (rawQ.toLowerCase().startsWith("ინსტრუქცია:")) {
+                    container.innerHTML += `<div class="instruction-box">💡 ${rawQ}</div>`;
                     return;
                 }
 
-                // ჭკვიანი დანაწევრება: თემა (წერტილამდე) და კითხვა
-                let themeMatch = rawQuestion.match(/თემა\s*\d+[:\s][^.]+./i); 
-                let themeText = themeMatch ? themeMatch[0].trim() : "";
-                let questMatch = rawQuestion.match(/კითხვა\s*\d+[:\s]*/i);
-                let questLabel = questMatch ? questMatch[0].trim() : "";
-                let finalBody = rawQuestion.replace(themeText, "").replace(questLabel, "").trim();
+                // ლოგიკა: ვყოფთ ტექსტს სიტყვა "კითხვა"-ზე
+                let parts = rawQ.split(/კითხვა\s*\d+[:\s]*/i);
+                let themePart = parts[0] ? parts[0].trim() : "";
+                
+                // ვიგებთ კითხვის ნომერს ორიგინალიდან
+                let questMatch = rawQ.match(/კითხვა\s*\d+/i);
+                let questLabel = questMatch ? questMatch[0] : "კითხვა " + (idx + 1);
+                
+                let bodyText = parts[1] ? parts[1].trim() : themePart;
+                // თუ "კითხვა" საერთოდ არ ეწერა, მაშინ მთლიანი ტექსტია კითხვა
+                if (!parts[1]) themePart = ""; 
 
-                const timerId = `timer-${idx}`;
+                const tId = `t-${idx}`;
                 const card = document.createElement('div');
                 card.className = 'question-card';
                 card.innerHTML = `
-                    <div style="margin-bottom: 10px;">
-                        ${themeText ? `<span class="theme-badge">🏷️ ${themeText}</span>` : ''}
-                        ${questLabel ? `<span class="question-number-badge">${questLabel}</span>` : ''}
-                    </div>
+                    ${themePart ? `<div class="theme-header">🏷️ ${themePart}</div>` : ''}
+                    <div class="q-number-badge"># ${questLabel}</div>
                     <div class="question-body">
-                        ${finalBody.includes('http') ? `<img src="${finalBody}" class="q-img">` : finalBody}
+                        ${bodyText.includes('http') ? `<img src="${bodyText}" class="q-img">` : bodyText}
                     </div>
                     <div class="timer-row">
-                        <button style="padding:10px 20px; border-radius:10px; border:none; background:#e2e8f0; cursor:pointer; font-weight:bold; font-size:0.9rem;" onclick="handleTimer('${timerId}', 20, this)">⏱️ ტაიმერი (20წ)</button>
-                        <div id="${timerId}" class="timer-display">20</div>
+                        <button style="padding:10px 15px; border-radius:8px; border:none; background:#e2e8f0; cursor:pointer; font-weight:bold;" onclick="startT('${tId}', 20, this)">⏱️ ტაიმერი (20წ)</button>
+                        <div id="${tId}" class="timer-display">20</div>
                     </div>
                     <button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">პასუხის ნახვა</button>
-                    <div class="ans-text">✅ პასუხი: ${answer}</div>
+                    <div class="ans-text">✅ ${ans}</div>
                 `;
                 container.appendChild(card);
             });
             window.scrollTo(0, 0);
         };
 
-        window.handleTimer = function(id, sec, btn) {
-            if (timersList[id]) return;
-            btn.disabled = true;
-            let timeRemaining = sec;
+        window.startT = function(id, s, btn) {
+            btn.disabled = true; let left = s;
             timersList[id] = setInterval(() => {
-                timeRemaining--;
-                document.getElementById(id).innerText = timeRemaining;
-                if (timeRemaining <= 0) {
-                    clearInterval(timersList[id]);
-                    document.getElementById(id).innerText = "⌛";
-                }
+                left--; document.getElementById(id).innerText = left;
+                if(left <= 0) { clearInterval(timersList[id]); document.getElementById(id).innerText = "⌛"; }
             }, 1000);
         };
 
