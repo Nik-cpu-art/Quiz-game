@@ -13,33 +13,27 @@
         .lb-item { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #334155; }
         .menu-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; padding: 20px; }
         .package-card { background: #1e293b; padding: 25px; border-radius: 20px; border: 1px solid #334155; transition: 0.3s; cursor: pointer; }
-        .package-card:hover { transform: translateY(-5px); border-color: #f1c40f; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .package-card:hover { border-color: #f1c40f; transform: translateY(-3px); }
         #game-zone { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 50px; }
         .controls { margin-bottom: 25px; }
         .controls button { padding: 12px 20px; background: #334155; border: 1px solid #f1c40f; border-radius: 10px; color: #f1c40f; font-weight: bold; cursor: pointer; margin: 5px; }
-        .question-card { background: #ffffff; padding: 35px; border-radius: 25px; color: #1e293b; text-align: left; margin-bottom: 40px; box-shadow: 0 12px 30px rgba(0,0,0,0.3); border-top: 6px solid #3b82f6; }
-        .instr-header { background: #6366f1; color: white; padding: 18px 25px; border-radius: 15px; font-weight: bold; margin: 20px 0; display: block; border-left: 8px solid #4338ca; text-align: left; }
-        .theme-header { background: linear-gradient(90deg, #3b82f6, #6366f1); color: white; padding: 15px 25px; border-radius: 12px; font-weight: bold; text-align: left; margin: 35px 0 20px 0; text-transform: uppercase; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
-        .timer-row { display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; padding: 15px 25px; border-radius: 18px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
-        .timer-display { font-size: 2rem; font-weight: 800; color: #ef4444; }
-        .btn-ans { width: 100%; padding: 18px; background: #0f172a; color: white; border: none; border-radius: 18px; font-weight: bold; cursor: pointer; }
-        .ans-text { display: none; margin-top: 20px; padding: 20px; background: #dcfce7; color: #166534; border-radius: 18px; font-weight: bold; border-left: 8px solid #22c55e; }
-        .q-img { max-width: 100%; border-radius: 20px; margin-bottom: 20px; display: block; }
-        .back-btn { background: #ef4444; color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; margin-bottom: 30px; font-weight: bold; }
-        .final-rating-box { background:#f1c40f; color:#0f172a; padding:35px; border-radius:25px; margin-top:50px; border:5px solid #ffffff; }
-        .mini-select { background: #0f172a; color: white; border: 1px solid #f1c40f; padding: 8px; border-radius: 8px; }
-        .swayaki-box { background: white; color: #1e293b; margin-bottom: 15px; border-radius: 12px; display: flex; align-items: stretch; overflow: hidden; border: 1px solid #e2e8f0; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .question-card { background: #ffffff; padding: 35px; border-radius: 25px; color: #1e293b; text-align: left; margin-bottom: 40px; border-top: 6px solid #3b82f6; }
+        .theme-header { background: linear-gradient(90deg, #3b82f6, #6366f1); color: white; padding: 15px 25px; border-radius: 12px; font-weight: bold; text-align: left; margin: 35px 0 20px 0; text-transform: uppercase; }
+        .swayaki-box { background: white; color: #1e293b; margin-bottom: 15px; border-radius: 12px; display: flex; align-items: stretch; overflow: hidden; border: 1px solid #e2e8f0; text-align: left; }
         .swayaki-pts { background: #f8fafc; color: #ef4444; width: 70px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; border-right: 2px solid #e2e8f0; }
         .swayaki-content { padding: 25px; flex: 1; }
+        .ans-text { display: none; margin-top: 20px; padding: 20px; background: #dcfce7; color: #166534; border-radius: 18px; font-weight: bold; border-left: 8px solid #22c55e; }
+        .back-btn { background: #ef4444; color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; margin-bottom: 30px; font-weight: bold; }
+        .final-rating-box { background:#f1c40f; color:#0f172a; padding:35px; border-radius:25px; margin-top:50px; }
     </style>
 </head>
 <body>
 
     <div id="home-page">
-        <h1 class="header-title" onclick="initApp()">იაზროვნე იმისთვის, რომ იარსებო!</h1>
+        <h1 class="header-title" onclick="location.reload()">იაზროვნე იმისთვის, რომ იარსებო!</h1>
         <div id="leaderboard-section">
             <h3 style="color: #f1c40f; margin-bottom: 15px;">🏆 საუკეთესო ავტორები</h3>
-            <div id="leaderboard-list">იტვირთება...</div>
+            <div id="leaderboard-list">მონაცემები იტვირთება...</div>
         </div>
         <h2 id="menu-title" style="color: #f1c40f;">აირჩიეთ თემატიკა</h2>
         <div id="menu-container" class="menu-container"></div>
@@ -47,7 +41,7 @@
 
     <div id="game-zone">
         <button class="back-btn" onclick="location.reload()">⬅️ უკან დაბრუნება</button>
-        <h1 id="pkg-name-display" style="color: #f1c40f; margin-bottom: 30px;"></h1>
+        <h1 id="pkg-name-display" style="color: #f1c40f;"></h1>
         <div id="round-controls" class="controls">
             <button onclick="filterRound(1)">რაუნდი I</button>
             <button onclick="filterRound(2)">ბარათონი</button>
@@ -66,32 +60,31 @@
         let currentPkgObj = null;
 
         async function initApp() {
-            document.getElementById('home-page').style.display = 'block';
-            document.getElementById('game-zone').style.display = 'none';
-            const { data } = await _db.from('packages').select('*');
-            if (!data) return;
-            allPackages = data;
-            updateLeaderboard(data);
+            const { data, error } = await _db.from('packages').select('*');
+            if (error) { document.getElementById('leaderboard-list').innerText = "შეცდომა ბაზასთან."; return; }
+            allPackages = data || [];
+            updateLeaderboard(allPackages);
             showCategories();
         }
 
         function updateLeaderboard(data) {
-            const authorStats = {};
-            data.forEach(pkg => {
-                const name = pkg.author_name.trim();
-                if (!authorStats[name]) authorStats[name] = { totalPoints: 0, totalVotes: 0 };
-                authorStats[name].totalPoints += Number(pkg.total_score || 0);
-                authorStats[name].totalVotes += Number(pkg.votes_count || 0);
+            const stats = {};
+            data.forEach(p => {
+                const name = (p.author_name || "უცნობი").trim();
+                if (!stats[name]) stats[name] = { score: 0, votes: 0 };
+                stats[name].score += Number(p.total_score || 0);
+                stats[name].votes += Number(p.votes_count || 0);
             });
-            const sortedAuthors = Object.keys(authorStats).map(name => ({
+            const sorted = Object.keys(stats).map(name => ({
                 name,
-                avg: authorStats[name].totalVotes > 0 ? (authorStats[name].totalPoints / authorStats[name].totalVotes) : 0,
-                votes: authorStats[name].totalVotes
+                avg: stats[name].votes > 0 ? (stats[name].score / stats[name].votes) : 0,
+                votes: stats[name].votes
             })).sort((a, b) => b.avg - a.avg);
+
             const lb = document.getElementById('leaderboard-list');
-            lb.innerHTML = "";
-            sortedAuthors.slice(0, 5).forEach((auth, i) => {
-                lb.innerHTML += `<div class="lb-item"><span>${i+1}. ${auth.name} <small>(${auth.votes})</small></span><span style="color:#f1c40f; font-weight:bold;">⭐ ${auth.avg.toFixed(1)}</span></div>`;
+            lb.innerHTML = sorted.length ? "" : "ავტორები არ მოიძებნა.";
+            sorted.slice(0, 5).forEach((auth, i) => {
+                lb.innerHTML += `<div class="lb-item"><span>${i+1}. ${auth.name} (${auth.votes})</span><span style="color:#f1c40f; font-weight:bold;">⭐ ${auth.avg.toFixed(1)}</span></div>`;
             });
         }
 
@@ -99,17 +92,17 @@
             const container = document.getElementById('menu-container');
             container.innerHTML = "";
             const cats = {};
-            allPackages.forEach(pkg => {
-                const cName = pkg.category || "სხვა";
-                if (!cats[cName]) cats[cName] = [];
-                cats[cName].push(pkg);
+            allPackages.forEach(p => {
+                const c = p.category || "სხვა";
+                if (!cats[c]) cats[c] = [];
+                cats[c].push(p);
             });
             Object.keys(cats).forEach(catName => {
-                const firstPkg = cats[catName][0];
+                const icon = cats[catName][0].icon || "📂";
                 const card = document.createElement('div');
                 card.className = 'package-card';
                 card.onclick = () => showPackagesInCategory(catName, cats[catName]);
-                card.innerHTML = `<div style="font-size:3.5rem; margin-bottom:10px;">${firstPkg.icon || '📂'}</div><h2>${catName}</h2><p>${cats[catName].length} პაკეტი</p>`;
+                card.innerHTML = `<div style="font-size:3.5rem;">${icon}</div><h2>${catName}</h2><p>${cats[catName].length} პაკეტი</p>`;
                 container.appendChild(card);
             });
         }
@@ -117,17 +110,17 @@
         function showPackagesInCategory(catName, pkgs) {
             document.getElementById('menu-title').innerText = `თემა: ${catName}`;
             const container = document.getElementById('menu-container');
-            container.innerHTML = `<div style="grid-column: 1/-1;"><button class="back-btn" onclick="initApp()">⬅️ უკან</button></div>`;
-            pkgs.forEach(pkg => {
+            container.innerHTML = `<div style="grid-column: 1/-1;"><button class="back-btn" onclick="location.reload()">⬅️ უკან</button></div>`;
+            pkgs.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'package-card';
-                card.onclick = () => openPkg(pkg);
-                card.innerHTML = `<div style="font-size:3rem; margin-bottom:10px;">${pkg.icon || '💡'}</div><h3>${pkg.title}</h3><p>ავტორი: ${pkg.author_name}</p><div style="color:#f1c40f;">⭐ ${Number(pkg.rating || 0).toFixed(1)}</div>`;
+                card.onclick = () => openPkg(p);
+                card.innerHTML = `<div style="font-size:2rem;">${p.icon || '💡'}</div><h3>${p.title}</h3><p>ავტორი: ${p.author_name}</p><div>⭐ ${Number(p.rating || 0).toFixed(1)}</div>`;
                 container.appendChild(card);
             });
         }
 
-        window.openPkg = function(pkg) {
+        function openPkg(pkg) {
             currentPkgObj = pkg;
             document.getElementById('home-page').style.display = 'none';
             document.getElementById('game-zone').style.display = 'block';
@@ -135,7 +128,7 @@
             const isSwayaki = pkg.title.toLowerCase().includes("სვაიაკი");
             document.getElementById('round-controls').style.display = isSwayaki ? 'none' : 'block';
             Papa.parse(pkg.csv_url, { download: true, complete: (res) => { activePkgData = res.data; filterRound(1); } });
-        };
+        }
 
         window.filterRound = function(num) {
             const container = document.getElementById('quiz-container');
@@ -144,67 +137,34 @@
             const isSwayaki = currentPkgObj.title.toLowerCase().includes("სვაიაკი");
             let swayakiCount = 0;
 
-            qList.forEach((row) => {
-                let fullText = (row[1] || "").trim();
-                let ans = row[2] || "";
-                if (fullText.toLowerCase().startsWith("ინსტრუქცია:")) {
-                    container.innerHTML += `<div class="instr-header">📢 ${fullText}</div>`;
-                    return;
-                }
-                if (fullText.toLowerCase().startsWith("თემა:")) {
-                    container.innerHTML += `<div class="theme-header">📁 ${fullText}</div>`;
+            qList.forEach(row => {
+                let txt = (row[1] || "").trim();
+                let ans = (row[2] || "").trim();
+                if (txt.toLowerCase().startsWith("თემა:")) {
+                    container.innerHTML += `<div class="theme-header">📁 ${txt}</div>`;
                     swayakiCount = 0;
-                    return;
-                }
-                if (isSwayaki) {
+                } else if (isSwayaki) {
                     swayakiCount++;
-                    const points = swayakiCount * 10;
-                    container.innerHTML += `
-                        <div class="swayaki-box">
-                            <div class="swayaki-pts">${points}</div>
-                            <div class="swayaki-content">
-                                <div style="font-size:1.2rem; margin-bottom:12px; font-weight:500;">${fullText}</div>
-                                <button onclick="this.nextElementSibling.style.display='block'; this.style.color='#94a3b8';" style="background:none; border:none; color:#3b82f6; cursor:pointer; font-weight:bold; padding:0;">პასუხი:</button>
-                                <div style="display:none; margin-top:8px; color:#166534; font-weight:bold;">✅ ${ans}</div>
-                            </div>
-                        </div>`;
+                    container.innerHTML += `<div class="swayaki-box"><div class="swayaki-pts">${swayakiCount*10}</div><div class="swayaki-content"><div>${txt}</div><button onclick="this.nextElementSibling.style.display='block'" style="background:none; border:none; color:#3b82f6; cursor:pointer; font-weight:bold; padding:0; margin-top:10px;">პასუხი:</button><div style="display:none; color:#166534; font-weight:bold; margin-top:5px;">✅ ${ans}</div></div></div>`;
                 } else {
-                    let contentHtml = fullText.includes('http') ? `<img src="${fullText}" class="q-img">` : fullText;
-                    container.innerHTML += `
-                        <div class="question-card">
-                            <div style="font-size:1.3rem; margin-bottom:25px;">${contentHtml}</div>
-                            <div class="timer-row"><button onclick="startT(this.nextElementSibling)">⏱️ ტაიმერი</button><div class="timer-display">20</div></div>
-                            <button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button>
-                            <div class="ans-text">✅ პასუხი: ${ans}</div>
-                        </div>`;
+                    container.innerHTML += `<div class="question-card"><div>${txt}</div><button class="controls" style="width:100%; margin-top:15px;" onclick="this.nextElementSibling.style.display='block'">ნახე პასუხი</button><div class="ans-text">✅ ${ans}</div></div>`;
                 }
             });
 
             if (isSwayaki || num === 4) {
-                container.innerHTML += `
-                    <div class="final-rating-box">
-                        <h2>🎉 დასრულდა!</h2>
-                        <p>შეაფასეთ პაკეტი:</p>
-                        <select id="rate-sel" class="mini-select"><option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option></select><br>
-                        <button class="controls" style="margin-top:15px; background:#0f172a; color:white; border:none; padding:10px 25px; border-radius:8px; cursor:pointer;" onclick="vote()">გაგზავნა</button>
-                    </div>`;
+                container.innerHTML += `<div class="final-rating-box"><h3>შეაფასეთ პაკეტი</h3><select id="rate-sel" style="padding:10px; border-radius:8px;"><option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option></select><br><button class="controls" style="margin-top:10px;" onclick="vote()">გაგზავნა</button></div>`;
             }
-            window.scrollTo(0, 0);
+            window.scrollTo(0,0);
         };
 
         window.vote = async function() {
             const val = parseInt(document.getElementById('rate-sel').value);
-            const newCount = Number(currentPkgObj.votes_count || 0) + 1;
-            const newTotal = Number(currentPkgObj.total_score || 0) + val;
-            const newRating = newTotal / newCount;
-            const { error } = await _db.from('packages').update({ total_score: newTotal, votes_count: newCount, rating: newRating }).eq('id', currentPkgObj.id);
-            if(!error) { alert("მადლობა! რეიტინგი განახლდა."); location.reload(); }
+            const nVotes = Number(currentPkgObj.votes_count || 0) + 1;
+            const nScore = Number(currentPkgObj.total_score || 0) + val;
+            const { error } = await _db.from('packages').update({ total_score: nScore, votes_count: nVotes, rating: nScore/nVotes }).eq('id', currentPkgObj.id);
+            if(!error) { alert("მადლობა!"); location.reload(); }
         };
 
-        function startT(el) {
-            let s = 20; el.innerText = s;
-            const itv = setInterval(() => { s--; el.innerText = s; if(s<=0){ clearInterval(itv); el.innerText="⌛"; } }, 1000);
-        }
         initApp();
     </script>
 </body>
