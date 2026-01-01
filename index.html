@@ -18,7 +18,7 @@
         #game-zone { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 50px; }
         .controls button { padding: 12px 20px; background: #334155; border: 1px solid #f1c40f; border-radius: 10px; color: #f1c40f; font-weight: bold; cursor: pointer; margin: 5px; }
         .question-card { background: #ffffff; padding: 35px; border-radius: 25px; color: #1e293b; text-align: left; margin-bottom: 40px; box-shadow: 0 12px 30px rgba(0,0,0,0.3); border-top: 6px solid #3b82f6; }
-        .instr-header { background: #6366f1; color: white; padding: 18px 25px; border-radius: 15px; font-weight: bold; margin-bottom: 25px; display: block; border-left: 8px solid #4338ca; text-align: left; }
+        .instr-header { background: #6366f1; color: white; padding: 18px 25px; border-radius: 15px; font-weight: bold; margin: 20px 0; display: block; border-left: 8px solid #4338ca; text-align: left; font-size: 1.1rem; }
         .timer-row { display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; padding: 15px 25px; border-radius: 18px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
         .timer-display { font-size: 2rem; font-weight: 800; color: #ef4444; }
         .btn-ans { width: 100%; padding: 18px; background: #0f172a; color: white; border: none; border-radius: 18px; font-weight: bold; cursor: pointer; }
@@ -167,26 +167,29 @@
                 let fullText = (row[1] || "").trim();
                 let ans = row[2] || "";
                 
+                // ინსტრუქციის განცალკევებული ლოგიკა
                 if (fullText.toLowerCase().startsWith("ინსტრუქცია:")) {
-                    container.innerHTML += `
-                        <div class="instr-header">
-                            📢 ${fullText}
-                        </div>`;
-                    return;
+                    const instrDiv = document.createElement('div');
+                    instrDiv.className = 'instr-header';
+                    instrDiv.innerHTML = `📢 ${fullText}`;
+                    container.appendChild(instrDiv);
+                    return; // წყვეტს ამ ხაზის დამუშავებას, რომ თეთრი ბარათი არ შეიქმნას
                 }
 
+                // ჩვეულებრივი კითხვის ბარათი
                 let contentHtml = fullText.includes('http') ? `<img src="${fullText}" class="q-img">` : fullText;
-                
-                container.innerHTML += `
-                    <div class="question-card">
-                        <div style="font-size:1.3rem; margin-bottom:25px; color:#1e293b; font-weight:500;">${contentHtml}</div>
-                        <div class="timer-row">
-                            <button onclick="startT(this.nextElementSibling)" style="cursor:pointer; padding:10px 18px; border-radius:10px; border:none; background:#e2e8f0; font-weight:bold; color:#475569;">⏱️ ტაიმერი</button>
-                            <div class="timer-display">20</div>
-                        </div>
-                        <button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button>
-                        <div class="ans-text">✅ პასუხი: ${ans}</div>
-                    </div>`;
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <div style="font-size:1.3rem; margin-bottom:25px; color:#1e293b; font-weight:500;">${contentHtml}</div>
+                    <div class="timer-row">
+                        <button onclick="startT(this.nextElementSibling)" style="cursor:pointer; padding:10px 18px; border-radius:10px; border:none; background:#e2e8f0; font-weight:bold; color:#475569;">⏱️ ტაიმერი</button>
+                        <div class="timer-display">20</div>
+                    </div>
+                    <button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button>
+                    <div class="ans-text">✅ პასუხი: ${ans}</div>
+                `;
+                container.appendChild(card);
             });
 
             if (num === 4 && currentPkgObj) {
