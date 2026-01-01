@@ -76,18 +76,27 @@
             data.forEach(pkg => {
                 const name = pkg.author_name.trim();
                 if (!authorStats[name]) authorStats[name] = { totalPoints: 0, totalVotes: 0 };
-                authorStats[name].totalPoints += Number(pkg.total_score || 0);
-                authorStats[name].totalVotes += Number(pkg.votes_count || 0);
+                
+                let votes = Number(pkg.votes_count || 0);
+                let score = Number(pkg.total_score || 0);
+                let rat = Number(pkg.rating || 0);
+                // რეიტინგის აღდგენის ლოგიკა, თუ ბაზაში 0-ებია
+                if (score === 0 && rat > 0 && votes > 0) score = rat * votes;
+                
+                authorStats[name].totalPoints += score;
+                authorStats[name].totalVotes += votes;
             });
+
             const sortedAuthors = Object.keys(authorStats).map(name => ({
                 name: name,
                 avg: authorStats[name].totalVotes > 0 ? (authorStats[name].totalPoints / authorStats[name].totalVotes) : 0,
                 votes: authorStats[name].totalVotes
             })).sort((a, b) => b.avg - a.avg);
+
             const lb = document.getElementById('leaderboard-list');
             lb.innerHTML = "";
             sortedAuthors.slice(0, 5).forEach((auth, i) => {
-                lb.innerHTML += `<div class="lb-item"><span>${i+1}. ${auth.name} <small>(${auth.votes})</small></span><span>⭐ ${auth.avg.toFixed(1)}</span></div>`;
+                lb.innerHTML += `<div class="lb-item"><span>${i+1}. ${auth.name} <small style="color:#94a3b8;">(${auth.votes} პაკეტი)</small></span><span style="color:#f1c40f; font-weight:bold;">⭐ ${auth.avg.toFixed(1)}</span></div>`;
             });
         }
 
@@ -102,14 +111,20 @@
             });
 
             Object.keys(cats).forEach(catName => {
-                const representativePkg = cats[catName][0];
+                // კატეგორიის რეიტინგის დათვლა (ყველა შიდა პაკეტის საშუალო)
+                let totalPkgRating = 0;
+                cats[catName].forEach(p => totalPkgRating += Number(p.rating || 0));
+                let avgCatRating = totalPkgRating / cats[catName].length;
+
+                const firstPkg = cats[catName][0];
                 const card = document.createElement('div');
                 card.className = 'package-card';
                 card.onclick = () => showPackagesInCategory(catName, cats[catName]);
                 card.innerHTML = `
-                    <div style="font-size:3.5rem; margin-bottom:10px;">${representativePkg.icon || '📂'}</div>
+                    <div style="font-size:3.5rem; margin-bottom:10px;">${firstPkg.icon || '📂'}</div>
                     <h2 style="margin:10px 0;">${catName}</h2>
                     <p style="color:#94a3b8;">${cats[catName].length} პაკეტი</p>
+                    <div style="color:#f1c40f; font-weight:bold;">⭐ ${avgCatRating.toFixed(1)}</div>
                 `;
                 container.appendChild(card);
             });
@@ -120,14 +135,14 @@
             const container = document.getElementById('menu-container');
             container.innerHTML = `<div style="grid-column: 1/-1;"><button class="back-btn" onclick="initApp()" style="background:#334155; margin-bottom:20px;">⬅️ თემებში დაბრუნება</button></div>`;
             
-            pkgs.forEach((pkg, index) => {
+            pkgs.forEach(pkg => {
                 const card = document.createElement('div');
                 card.className = 'package-card';
                 card.onclick = () => openPkg(pkg);
                 card.innerHTML = `
                     <div style="font-size:3rem; margin-bottom:10px;">${pkg.icon || '💡'}</div>
                     <h3>${pkg.title}</h3>
-                    <p style="color:#94a3b8;">ავტორი: ${pkg.author_name}</p>
+                    <p style="color:#94a3b8; font-size:0.9rem;">ავტორი: ${pkg.author_name}</p>
                     <div style="color:#f1c40f; font-weight:bold;">⭐ ${Number(pkg.rating || 0).toFixed(1)}</div>
                 `;
                 container.appendChild(card);
@@ -157,7 +172,7 @@
                     fullText = parts.filter(p => !p.toLowerCase().includes("ინსტრუქცია:")).join("\n").trim();
                 }
                 let contentHtml = fullText.includes('http') ? `<img src="${fullText}" class="q-img">` : fullText;
-                container.innerHTML += `<div class="question-card">${instrHtml}<div style="font-size:1.3rem; margin-bottom:25px;">${contentHtml}</div><div class="timer-row"><button onclick="startT(this.nextElementSibling)">⏱️ ტაიმერი</button><div class="timer-display">20</div></div><button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button><div class="ans-text">✅ პასუხი: ${ans}</div></div>`;
+                container.innerHTML += `<div class="question-card">${instrHtml}<div style="font-size:1.3rem; margin-bottom:25px; color:#1e293b; font-weight:500;">${contentHtml}</div><div class="timer-row"><button onclick="startT(this.nextElementSibling)" style="cursor:pointer; padding:10px 18px; border-radius:10px; border:none; background:#e2e8f0; font-weight:bold; color:#475569;">⏱️ ტაიმერი</button><div class="timer-display">20</div></div><button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button><div class="ans-text">✅ პასუხი: ${ans}</div></div>`;
             });
             if (num === 4 && currentPkgObj) {
                 container.innerHTML += `<div class="final-rating-box"><h2>🎉 დასრულდა!</h2><p>შეაფასეთ პაკეტი:</p><select id="rate-sel" class="mini-select"><option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option></select><br><button class="mini-rate-btn" onclick="vote(${currentPkgObj.id}, ${currentPkgObj.total_score || 0}, ${currentPkgObj.votes_count || 0}, 'rate-sel')">გაგზავნა</button></div>`;
@@ -167,7 +182,14 @@
 
         window.vote = async function(id, tot, cnt, selId) {
             const val = parseInt(document.getElementById(selId).value);
-            const { error } = await _db.from('packages').update({ total_score: tot + val, votes_count: cnt + 1, rating: (tot + val) / (cnt + 1) }).eq('id', id);
+            // თუ ბაზაში 0-ებია, თავიდან ვანგარიშობთ
+            if (tot === 0 && currentPkgObj.rating > 0) tot = currentPkgObj.rating * cnt;
+            
+            const newCount = cnt + 1;
+            const newTotal = tot + val;
+            const newRating = newTotal / newCount;
+
+            const { error } = await _db.from('packages').update({ total_score: newTotal, votes_count: newCount, rating: newRating }).eq('id', id);
             if(!error) { alert("მადლობა!"); location.reload(); }
         };
 
