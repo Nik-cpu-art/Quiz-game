@@ -12,14 +12,14 @@
         #leaderboard-section { max-width: 600px; margin: 0 auto 40px; background: #1e293b; padding: 20px; border-radius: 16px; border: 1px solid rgba(241, 196, 15, 0.4); }
         .lb-item { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #334155; }
         .menu-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .package-card { background: #1e293b; padding: 25px; border-radius: 20px; border: 1px solid #334155; transition: 0.3s; cursor: pointer; position: relative; }
+        .package-card { background: #1e293b; padding: 25px; border-radius: 20px; border: 1px solid #334155; transition: 0.3s; cursor: pointer; }
         .package-card:hover { transform: translateY(-5px); border-color: #f1c40f; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         #game-zone { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 50px; }
         .controls { margin-bottom: 25px; }
         .controls button { padding: 12px 20px; background: #334155; border: 1px solid #f1c40f; border-radius: 10px; color: #f1c40f; font-weight: bold; cursor: pointer; margin: 5px; }
         .question-card { background: #ffffff; padding: 35px; border-radius: 25px; color: #1e293b; text-align: left; margin-bottom: 40px; box-shadow: 0 12px 30px rgba(0,0,0,0.3); border-top: 6px solid #3b82f6; }
-        .instr-header { background: #6366f1; color: white; padding: 18px 25px; border-radius: 15px; font-weight: bold; margin: 20px 0; display: block; border-left: 8px solid #4338ca; text-align: left; font-size: 1.1rem; }
-        .theme-header { background: linear-gradient(90deg, #3b82f6, #6366f1); color: white; padding: 15px 25px; border-radius: 12px; font-weight: bold; text-align: left; margin: 35px 0 20px 0; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
+        .instr-header { background: #6366f1; color: white; padding: 18px 25px; border-radius: 15px; font-weight: bold; margin: 20px 0; display: block; border-left: 8px solid #4338ca; text-align: left; }
+        .theme-header { background: linear-gradient(90deg, #3b82f6, #6366f1); color: white; padding: 15px 25px; border-radius: 12px; font-weight: bold; text-align: left; margin: 35px 0 20px 0; text-transform: uppercase; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
         .timer-row { display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; padding: 15px 25px; border-radius: 18px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
         .timer-display { font-size: 2rem; font-weight: 800; color: #ef4444; }
         .btn-ans { width: 100%; padding: 18px; background: #0f172a; color: white; border: none; border-radius: 18px; font-weight: bold; cursor: pointer; }
@@ -28,7 +28,6 @@
         .back-btn { background: #ef4444; color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; margin-bottom: 30px; font-weight: bold; }
         .final-rating-box { background:#f1c40f; color:#0f172a; padding:35px; border-radius:25px; margin-top:50px; border:5px solid #ffffff; }
         .mini-select { background: #0f172a; color: white; border: 1px solid #f1c40f; padding: 8px; border-radius: 8px; }
-        .mini-rate-btn { background: #0f172a; color: white; border: none; padding: 12px 30px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .swayaki-box { background: white; color: #1e293b; margin-bottom: 15px; border-radius: 12px; display: flex; align-items: stretch; overflow: hidden; border: 1px solid #e2e8f0; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .swayaki-pts { background: #f8fafc; color: #ef4444; width: 70px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; border-right: 2px solid #e2e8f0; }
         .swayaki-content { padding: 25px; flex: 1; }
@@ -81,13 +80,11 @@
             data.forEach(pkg => {
                 const name = pkg.author_name.trim();
                 if (!authorStats[name]) authorStats[name] = { totalPoints: 0, totalVotes: 0 };
-                let votes = Number(pkg.votes_count || 0);
-                let score = Number(pkg.total_score || 0);
-                authorStats[name].totalPoints += score;
-                authorStats[name].totalVotes += votes;
+                authorStats[name].totalPoints += Number(pkg.total_score || 0);
+                authorStats[name].totalVotes += Number(pkg.votes_count || 0);
             });
             const sortedAuthors = Object.keys(authorStats).map(name => ({
-                name: name,
+                name,
                 avg: authorStats[name].totalVotes > 0 ? (authorStats[name].totalPoints / authorStats[name].totalVotes) : 0,
                 votes: authorStats[name].totalVotes
             })).sort((a, b) => b.avg - a.avg);
@@ -112,7 +109,7 @@
                 const card = document.createElement('div');
                 card.className = 'package-card';
                 card.onclick = () => showPackagesInCategory(catName, cats[catName]);
-                card.innerHTML = `<div style="font-size:3.5rem; margin-bottom:10px;">${firstPkg.icon || '📂'}</div><h2 style="margin:10px 0;">${catName}</h2><p>${cats[catName].length} პაკეტი</p>`;
+                card.innerHTML = `<div style="font-size:3.5rem; margin-bottom:10px;">${firstPkg.icon || '📂'}</div><h2>${catName}</h2><p>${cats[catName].length} პაკეტი</p>`;
                 container.appendChild(card);
             });
         }
@@ -120,4 +117,12 @@
         function showPackagesInCategory(catName, pkgs) {
             document.getElementById('menu-title').innerText = `თემა: ${catName}`;
             const container = document.getElementById('menu-container');
-            container.innerHTML = `<div style="grid-column
+            container.innerHTML = `<div style="grid-column: 1/-1;"><button class="back-btn" onclick="initApp()">⬅️ უკან</button></div>`;
+            pkgs.forEach(pkg => {
+                const card = document.createElement('div');
+                card.className = 'package-card';
+                card.onclick = () => openPkg(pkg);
+                card.innerHTML = `<div style="font-size:3rem; margin-bottom:10px;">${pkg.icon || '💡'}</div><h3>${pkg.title}</h3><p>ავტორი: ${pkg.author_name}</p><div style="color:#f1c40f;">⭐ ${Number(pkg.rating || 0).toFixed(1)}</div>`;
+                container.appendChild(card);
+            });
+        }
