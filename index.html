@@ -126,3 +126,86 @@
                 container.appendChild(card);
             });
         }
+
+        window.openPkg = function(pkg) {
+            currentPkgObj = pkg;
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('game-zone').style.display = 'block';
+            document.getElementById('pkg-name-display').innerText = pkg.title;
+            const isSwayaki = pkg.title.toLowerCase().includes("სვაიაკი");
+            document.getElementById('round-controls').style.display = isSwayaki ? 'none' : 'block';
+            Papa.parse(pkg.csv_url, { download: true, complete: (res) => { activePkgData = res.data; filterRound(1); } });
+        };
+
+        window.filterRound = function(num) {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = "";
+            let qList = activePkgData.filter(r => r[0] && r[0].toString().trim() === num.toString());
+            const isSwayaki = currentPkgObj.title.toLowerCase().includes("სვაიაკი");
+            let swayakiCount = 0;
+
+            qList.forEach((row) => {
+                let fullText = (row[1] || "").trim();
+                let ans = row[2] || "";
+                if (fullText.toLowerCase().startsWith("ინსტრუქცია:")) {
+                    container.innerHTML += `<div class="instr-header">📢 ${fullText}</div>`;
+                    return;
+                }
+                if (fullText.toLowerCase().startsWith("თემა:")) {
+                    container.innerHTML += `<div class="theme-header">📁 ${fullText}</div>`;
+                    swayakiCount = 0;
+                    return;
+                }
+                if (isSwayaki) {
+                    swayakiCount++;
+                    const points = swayakiCount * 10;
+                    container.innerHTML += `
+                        <div class="swayaki-box">
+                            <div class="swayaki-pts">${points}</div>
+                            <div class="swayaki-content">
+                                <div style="font-size:1.2rem; margin-bottom:12px; font-weight:500;">${fullText}</div>
+                                <button onclick="this.nextElementSibling.style.display='block'; this.style.color='#94a3b8';" style="background:none; border:none; color:#3b82f6; cursor:pointer; font-weight:bold; padding:0;">პასუხი:</button>
+                                <div style="display:none; margin-top:8px; color:#166534; font-weight:bold;">✅ ${ans}</div>
+                            </div>
+                        </div>`;
+                } else {
+                    let contentHtml = fullText.includes('http') ? `<img src="${fullText}" class="q-img">` : fullText;
+                    container.innerHTML += `
+                        <div class="question-card">
+                            <div style="font-size:1.3rem; margin-bottom:25px;">${contentHtml}</div>
+                            <div class="timer-row"><button onclick="startT(this.nextElementSibling)">⏱️ ტაიმერი</button><div class="timer-display">20</div></div>
+                            <button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button>
+                            <div class="ans-text">✅ პასუხი: ${ans}</div>
+                        </div>`;
+                }
+            });
+
+            if (isSwayaki || num === 4) {
+                container.innerHTML += `
+                    <div class="final-rating-box">
+                        <h2>🎉 დასრულდა!</h2>
+                        <p>შეაფასეთ პაკეტი:</p>
+                        <select id="rate-sel" class="mini-select"><option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option></select><br>
+                        <button class="controls" style="margin-top:15px; background:#0f172a; color:white; border:none; padding:10px 25px; border-radius:8px; cursor:pointer;" onclick="vote()">გაგზავნა</button>
+                    </div>`;
+            }
+            window.scrollTo(0, 0);
+        };
+
+        window.vote = async function() {
+            const val = parseInt(document.getElementById('rate-sel').value);
+            const newCount = Number(currentPkgObj.votes_count || 0) + 1;
+            const newTotal = Number(currentPkgObj.total_score || 0) + val;
+            const newRating = newTotal / newCount;
+            const { error } = await _db.from('packages').update({ total_score: newTotal, votes_count: newCount, rating: newRating }).eq('id', currentPkgObj.id);
+            if(!error) { alert("მადლობა! რეიტინგი განახლდა."); location.reload(); }
+        };
+
+        function startT(el) {
+            let s = 20; el.innerText = s;
+            const itv = setInterval(() => { s--; el.innerText = s; if(s<=0){ clearInterval(itv); el.innerText="⌛"; } }, 1000);
+        }
+        initApp();
+    </script>
+</body>
+</html>
