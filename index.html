@@ -3,32 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <meta name="google-site-verification" content="O949qCETZXu9WBSrZV_8zpKB7w1PN6_FvVlMuLQpRzk" />
-
-    <title>იაზროვნე იმისთვის, რომ იარსებო! - ვიქტორინა</title>
-    <meta name="description" content="ქართული ინტელექტუალური თამაში. კითხვები კინოს, პოლიტიკისა და სხვადასხვა თემების შესახებ.">
-    
+    <title>იაზროვნე იმისთვის, რომ იარსებო!</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; text-align: center; padding: 20px; margin: 0; line-height: 1.6; }
         .header-title { font-size: 2.5rem; color: #f1c40f; margin-top: 40px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
-        
         #leaderboard-section { max-width: 600px; margin: 0 auto 40px; background: #1e293b; padding: 20px; border-radius: 16px; border: 1px solid rgba(241, 196, 15, 0.4); }
         .lb-item { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #334155; }
-
         .menu-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; padding: 20px; }
         .package-card { background: #1e293b; padding: 25px; border-radius: 20px; border: 1px solid #334155; transition: 0.3s; cursor: pointer; position: relative; }
         .package-card:hover { transform: translateY(-5px); border-color: #f1c40f; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-
         #game-zone { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 50px; }
-        .controls button { padding: 12px 20px; background: #334155; border: 1px solid #f1c40f; border-radius: 10px; color: #f1c40f; font-weight: bold; cursor: pointer; margin: 5px; transition: 0.2s; }
-        .controls button:hover { background: #f1c40f; color: #0f172a; }
-        
+        .controls button { padding: 12px 20px; background: #334155; border: 1px solid #f1c40f; border-radius: 10px; color: #f1c40f; font-weight: bold; cursor: pointer; margin: 5px; }
         .question-card { background: #ffffff; padding: 35px; border-radius: 25px; color: #1e293b; text-align: left; margin-bottom: 40px; box-shadow: 0 12px 30px rgba(0,0,0,0.3); border-top: 6px solid #3b82f6; }
         .instr-header { background: #6366f1; color: white; padding: 18px 25px; border-radius: 15px; font-weight: bold; margin-bottom: 10px; display: block; border-left: 8px solid #4338ca; }
-        
         .theme-header { background: #3b82f6; color: white; padding: 8px 15px; border-radius: 10px; font-weight: bold; margin-bottom: 15px; display: inline-block; font-size: 0.9rem; }
         .timer-row { display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; padding: 15px 25px; border-radius: 18px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
         .timer-display { font-size: 2rem; font-weight: 800; color: #ef4444; }
@@ -36,7 +26,6 @@
         .ans-text { display: none; margin-top: 20px; padding: 20px; background: #dcfce7; color: #166534; border-radius: 18px; font-weight: bold; border-left: 8px solid #22c55e; }
         .q-img { max-width: 100%; border-radius: 20px; margin-bottom: 20px; display: block; }
         .back-btn { background: #ef4444; color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; margin-bottom: 30px; font-weight: bold; }
-        
         .final-rating-box { background:#f1c40f; color:#0f172a; padding:35px; border-radius:25px; margin-top:50px; border:5px solid #ffffff; }
         .mini-select { background: #0f172a; color: white; border: 1px solid #f1c40f; padding: 8px; border-radius: 8px; }
         .mini-rate-btn { background: #0f172a; color: white; border: none; padding: 12px 30px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
@@ -46,18 +35,16 @@
 
     <div id="home-page">
         <h1 class="header-title" onclick="initApp()">იაზროვნე იმისთვის, რომ იარსებო!</h1>
-        
         <div id="leaderboard-section">
             <h3 style="color: #f1c40f; margin-bottom: 15px;">🏆 საუკეთესო ავტორები</h3>
             <div id="leaderboard-list">იტვირთება...</div>
         </div>
-
-        <h2 id="menu-title" style="color: #f1c40f;">აირჩიეთ კატეგორია</h2>
+        <h2 id="menu-title" style="color: #f1c40f;">აირჩიეთ თემატიკა</h2>
         <div id="menu-container" class="menu-container"></div>
     </div>
 
     <div id="game-zone">
-        <button class="back-btn" onclick="location.reload()">⬅️ მენიუ</button>
+        <button class="back-btn" onclick="location.reload()">⬅️ უკან დაბრუნება</button>
         <h1 id="pkg-name-display" style="color: #f1c40f; margin-bottom: 30px;"></h1>
         <div class="controls">
             <button onclick="filterRound(1)">რაუნდი I</button>
@@ -72,61 +59,41 @@
         const S_URL = "https://jaxqzgnjanbnyvhrnlwu.supabase.co";
         const S_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpheHF6Z25qYW5ibnl2aHJubHd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjY5NDAsImV4cCI6MjA4Mjc0Mjk0MH0.Wfcqhe5aJlFhwknTfol5_lcdKVcNQFjJqj0X7U5WLu4";
         const _db = supabase.createClient(S_URL, S_KEY);
-        
         let allPackages = [];
         let activePkgData = [];
         let currentPkgObj = null;
 
-        // 1. აპლიკაციის ინიციალიზაცია
         async function initApp() {
-            document.getElementById('home-page').style.display = 'block';
-            document.getElementById('game-zone').style.display = 'none';
-            document.getElementById('menu-title').innerText = "აირჩიეთ კატეგორია";
-
-            const { data, error } = await _db.from('packages').select('*');
-            if (error || !data) return;
+            const { data } = await _db.from('packages').select('*');
+            if (!data) return;
             allPackages = data;
-
             updateLeaderboard(data);
             showCategories();
         }
 
-        // 2. ლიდერბორდის განახლება
         function updateLeaderboard(data) {
             const authorStats = {};
             data.forEach(pkg => {
                 const name = pkg.author_name.trim();
                 if (!authorStats[name]) authorStats[name] = { totalPoints: 0, totalVotes: 0 };
-                
-                let votes = Number(pkg.votes_count || 0);
-                let score = Number(pkg.total_score || 0);
-                authorStats[name].totalPoints += score;
-                authorStats[name].totalVotes += votes;
+                authorStats[name].totalPoints += Number(pkg.total_score || 0);
+                authorStats[name].totalVotes += Number(pkg.votes_count || 0);
             });
-
             const sortedAuthors = Object.keys(authorStats).map(name => ({
                 name: name,
                 avg: authorStats[name].totalVotes > 0 ? (authorStats[name].totalPoints / authorStats[name].totalVotes) : 0,
                 votes: authorStats[name].totalVotes
             })).sort((a, b) => b.avg - a.avg);
-
             const lb = document.getElementById('leaderboard-list');
             lb.innerHTML = "";
             sortedAuthors.slice(0, 5).forEach((auth, i) => {
-                lb.innerHTML += `
-                    <div class="lb-item">
-                        <span>${i+1}. ${auth.name} <small style="color:#94a3b8; font-size:0.75rem;">(${auth.votes} ხმა)</small></span>
-                        <span style="color:#f1c40f; font-weight:bold;">⭐ ${auth.avg.toFixed(1)}</span>
-                    </div>`;
+                lb.innerHTML += `<div class="lb-item"><span>${i+1}. ${auth.name} <small>(${auth.votes})</small></span><span>⭐ ${auth.avg.toFixed(1)}</span></div>`;
             });
         }
 
-        // 3. კატეგორიების ჩვენება
         function showCategories() {
             const container = document.getElementById('menu-container');
             container.innerHTML = "";
-            
-            // დაჯგუფება კატეგორიების მიხედვით
             const cats = {};
             allPackages.forEach(pkg => {
                 const cName = pkg.category || "სხვა";
@@ -135,11 +102,12 @@
             });
 
             Object.keys(cats).forEach(catName => {
+                const representativePkg = cats[catName][0];
                 const card = document.createElement('div');
                 card.className = 'package-card';
                 card.onclick = () => showPackagesInCategory(catName, cats[catName]);
                 card.innerHTML = `
-                    <div style="font-size:3.5rem; margin-bottom:10px;">📂</div>
+                    <div style="font-size:3.5rem; margin-bottom:10px;">${representativePkg.icon || '📂'}</div>
                     <h2 style="margin:10px 0;">${catName}</h2>
                     <p style="color:#94a3b8;">${cats[catName].length} პაკეტი</p>
                 `;
@@ -147,108 +115,59 @@
             });
         }
 
-        // 4. კონკრეტული კატეგორიის პაკეტების სიის ჩვენება
         function showPackagesInCategory(catName, pkgs) {
-            document.getElementById('menu-title').innerText = `კატეგორია: ${catName}`;
+            document.getElementById('menu-title').innerText = `თემა: ${catName}`;
             const container = document.getElementById('menu-container');
-            container.innerHTML = `
-                <div style="grid-column: 1/-1; text-align: left;">
-                    <button onclick="showCategories(); document.getElementById('menu-title').innerText = 'აირჩიეთ კატეგორია';" class="back-btn" style="background:#334155; margin-bottom:20px;">⬅️ კატეგორიებში დაბრუნება</button>
-                </div>
-            `;
-
-            pkgs.sort((a, b) => b.rating - a.rating).forEach(pkg => {
+            container.innerHTML = `<div style="grid-column: 1/-1;"><button class="back-btn" onclick="initApp()" style="background:#334155; margin-bottom:20px;">⬅️ თემებში დაბრუნება</button></div>`;
+            
+            pkgs.forEach((pkg, index) => {
                 const card = document.createElement('div');
                 card.className = 'package-card';
                 card.onclick = () => openPkg(pkg);
                 card.innerHTML = `
                     <div style="font-size:3rem; margin-bottom:10px;">${pkg.icon || '💡'}</div>
                     <h3>${pkg.title}</h3>
-                    <p style="color:#94a3b8; font-size:0.9rem;">ავტორი: ${pkg.author_name}</p>
+                    <p style="color:#94a3b8;">ავტორი: ${pkg.author_name}</p>
                     <div style="color:#f1c40f; font-weight:bold;">⭐ ${Number(pkg.rating || 0).toFixed(1)}</div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        // 5. პაკეტის გახსნა და თამაში
         window.openPkg = function(pkg) {
             currentPkgObj = pkg;
             document.getElementById('home-page').style.display = 'none';
             document.getElementById('game-zone').style.display = 'block';
             document.getElementById('pkg-name-display').innerText = pkg.title;
-            Papa.parse(pkg.csv_url, { 
-                download: true, 
-                complete: (res) => { 
-                    activePkgData = res.data; 
-                    filterRound(1); 
-                } 
-            });
+            Papa.parse(pkg.csv_url, { download: true, complete: (res) => { activePkgData = res.data; filterRound(1); } });
         };
 
         window.filterRound = function(num) {
             const container = document.getElementById('quiz-container');
             container.innerHTML = "";
             let qList = activePkgData.filter(r => r[0] && r[0].toString().trim() === num.toString());
-            
             qList.forEach((row) => {
                 let fullText = (row[1] || "").trim();
                 let ans = row[2] || "";
                 let instrHtml = "";
-                let bodyText = fullText;
-
                 if (fullText.toLowerCase().includes("ინსტრუქცია:")) {
                     let parts = fullText.split(/\n/);
                     let instrLine = parts.find(p => p.toLowerCase().includes("ინსტრუქცია:"));
-                    if (instrLine) {
-                        instrHtml = `<div class="instr-header">📢 ${instrLine.trim()}</div>`;
-                        bodyText = parts.filter(p => !p.toLowerCase().includes("ინსტრუქცია:")).join("\n").trim();
-                    }
+                    instrHtml = `<div class="instr-header">📢 ${instrLine}</div>`;
+                    fullText = parts.filter(p => !p.toLowerCase().includes("ინსტრუქცია:")).join("\n").trim();
                 }
-
-                let qParts = bodyText.split(/კითხვა\s*\d+[:\s]*/i);
-                let theme = qParts[0] ? qParts[0].trim() : "";
-                let mainContent = qParts[1] ? qParts[1].trim() : theme;
-                if (!qParts[1]) theme = "";
-                if (!mainContent && !instrHtml) return;
-
-                let contentHtml = mainContent.includes('http') ? `<img src="${mainContent}" class="q-img">` : mainContent;
-
-                container.innerHTML += `
-                    <div class="question-card">
-                        ${instrHtml}
-                        ${theme ? `<div class="theme-header">🏷️ ${theme}</div>` : ''}
-                        <div style="font-size:1.3rem; font-weight:500; margin-bottom:25px; color:#1e293b;">${contentHtml}</div>
-                        <div class="timer-row">
-                            <button onclick="startT(this.nextElementSibling)" style="cursor:pointer; padding:10px 18px; border-radius:10px; border:none; background:#e2e8f0; font-weight:bold; color:#475569;">⏱️ ტაიმერი</button>
-                            <div class="timer-display">20</div>
-                        </div>
-                        <button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button>
-                        <div class="ans-text">✅ პასუხი: ${ans}</div>
-                    </div>`;
+                let contentHtml = fullText.includes('http') ? `<img src="${fullText}" class="q-img">` : fullText;
+                container.innerHTML += `<div class="question-card">${instrHtml}<div style="font-size:1.3rem; margin-bottom:25px;">${contentHtml}</div><div class="timer-row"><button onclick="startT(this.nextElementSibling)">⏱️ ტაიმერი</button><div class="timer-display">20</div></div><button class="btn-ans" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button><div class="ans-text">✅ პასუხი: ${ans}</div></div>`;
             });
-
             if (num === 4 && currentPkgObj) {
-                container.innerHTML += `
-                    <div class="final-rating-box">
-                        <h2>🎉 პაკეტი დასრულდა!</h2>
-                        <p>შეაფასეთ ეს თემატიკა:</p>
-                        <select id="final-rate-select" class="mini-select">
-                            <option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option>
-                        </select><br>
-                        <button class="mini-rate-btn" onclick="vote(${currentPkgObj.id}, ${currentPkgObj.total_score || 0}, ${currentPkgObj.votes_count || 0}, 'final-rate-select')">გაგზავნა</button>
-                    </div>`;
+                container.innerHTML += `<div class="final-rating-box"><h2>🎉 დასრულდა!</h2><p>შეაფასეთ პაკეტი:</p><select id="rate-sel" class="mini-select"><option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option></select><br><button class="mini-rate-btn" onclick="vote(${currentPkgObj.id}, ${currentPkgObj.total_score || 0}, ${currentPkgObj.votes_count || 0}, 'rate-sel')">გაგზავნა</button></div>`;
             }
             window.scrollTo(0, 0);
         };
 
         window.vote = async function(id, tot, cnt, selId) {
             const val = parseInt(document.getElementById(selId).value);
-            const newCount = cnt + 1;
-            const newTotal = tot + val;
-            const newRating = newTotal / newCount;
-
-            const { error } = await _db.from('packages').update({ total_score: newTotal, votes_count: newCount, rating: newRating }).eq('id', id);
+            const { error } = await _db.from('packages').update({ total_score: tot + val, votes_count: cnt + 1, rating: (tot + val) / (cnt + 1) }).eq('id', id);
             if(!error) { alert("მადლობა!"); location.reload(); }
         };
 
@@ -256,7 +175,6 @@
             let s = 20; el.innerText = s;
             const itv = setInterval(() => { s--; el.innerText = s; if(s<=0){ clearInterval(itv); el.innerText="⌛"; } }, 1000);
         }
-
         initApp();
     </script>
 </body>
