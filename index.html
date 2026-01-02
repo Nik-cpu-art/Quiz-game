@@ -139,3 +139,63 @@
                     if(hasMultipleRounds) {
                         document.getElementById('round-controls').style.display = 'block';
                         filterRound(1);
+                    } else {
+                        document.getElementById('round-controls').style.display = 'none';
+                        filterRound('all'); // სვაიაკის რეჟიმი
+                    }
+                } 
+            });
+        }
+
+        function renderContent(val) {
+            const t = val.trim();
+            if (t.match(/\.(jpeg|jpg|gif|png|webp)$/i) || t.startsWith('http')) {
+                return `<img src="${t}" class="q-img" onerror="this.outerHTML='<p>${t}</p>'">`;
+            }
+            return `<div>${t}</div>`;
+        }
+
+        window.filterRound = function(num) {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = "";
+            const isAllMode = (num === 'all');
+            
+            let qList = isAllMode ? activePkgData : activePkgData.filter(r => r[0] && r[0].toString().trim() === num.toString());
+            let sCount = 0;
+
+            qList.forEach(row => {
+                let txt = (row[1] || "").trim();
+                let ans = (row[2] || "").trim();
+
+                if (txt.toLowerCase().includes("ინსტრუქცია")) {
+                    container.innerHTML += `<div class="instruction-card">📝 ${txt}</div>`;
+                } else if (txt.toLowerCase().startsWith("თემა:")) {
+                    container.innerHTML += `<div class="theme-header">📁 ${txt}</div>`;
+                    sCount = 0;
+                } else if (isAllMode) {
+                    sCount++;
+                    container.innerHTML += `<div class="swayaki-box"><div class="swayaki-pts">${sCount*10}</div><div class="swayaki-content">${renderContent(txt)}<button onclick="this.nextElementSibling.style.display='block'; this.style.display='none'" style="border:none; background:none; color:#3b82f6; cursor:pointer; margin-top:15px; font-weight:bold;">პასუხი:</button><div class="ans-text">✅ ${ans}</div></div></div>`;
+                } else {
+                    container.innerHTML += `<div class="question-card">${renderContent(txt)}<button class="back-btn" style="width:100%; margin-top:20px; background:#0f172a;" onclick="this.nextElementSibling.style.display='block'; this.style.display='none'">ნახე პასუხი</button><div class="ans-text">✅ ${ans}</div></div>`;
+                }
+            });
+
+            if (isAllMode || num === 4) {
+                container.innerHTML += `<div class="final-rating-box"><h2>🎉 პაკეტი დასრულდა!</h2><p>შეაფასეთ პაკეტი:</p><select id="rate-sel" style="padding:12px; border-radius:10px;"><option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option></select><br><button class="back-btn" style="margin-top:20px; background:#0f172a;" onclick="vote()">გაგზავნა</button></div>`;
+            }
+            window.scrollTo(0,0);
+        };
+
+        window.vote = async function() {
+            const val = parseInt(document.getElementById('rate-sel').value);
+            const { data } = await _db.from('packages').select('total_score, votes_count').eq('id', currentPkgObj.id).single();
+            const nS = Number(data.total_score || 0) + val;
+            const nV = Number(data.votes_count || 0) + 1;
+            const { error } = await _db.from('packages').update({ total_score: nS, votes_count: nV, rating: nS/nV }).eq('id', currentPkgObj.id);
+            if(!error) { alert("მადლობა!"); location.reload(); }
+        };
+
+        initApp();
+    </script>
+</body>
+</html>
